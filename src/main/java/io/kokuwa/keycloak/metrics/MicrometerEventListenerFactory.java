@@ -21,7 +21,7 @@ public class MicrometerEventListenerFactory implements EventListenerProviderFact
 
 	@Override
 	public String getId() {
-		return "micrometer-event-listener";
+		return "metrics-listener";
 	}
 
 	@Override

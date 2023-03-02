@@ -37,7 +37,7 @@ public class KeycloakClient {
 		var realm = new RealmRepresentation();
 		realm.setEnabled(true);
 		realm.setRealm(realmName);
-		realm.setEventsListeners(List.of("micrometer-event-listener"));
+		realm.setEventsListeners(List.of("metrics-listener"));
 		realm.setClients(List.of(client));
 		keycloak.realms().create(realm);
 		return keycloak.realms().realm(realmName).toRepresentation().getId();
