@@ -123,6 +123,12 @@
 			<groupId>org.keycloak</groupId>
 			<artifactId>keycloak-quarkus-server</artifactId>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion><!-- references ancient `commons-io` -->
+					<groupId>com.openshift</groupId>
+					<artifactId>openshift-restclient-java</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.keycloak</groupId>
