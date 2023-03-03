@@ -51,6 +51,8 @@ For usage in [Testcontainers](https://www.testcontainers.org/) see [KeycloakExte
 
 ### Docker
 
+Check: [kokuwaio/keycloak](https://github.com/kokuwaio/keycloak)
+
 Dockerfile:
 
 ```Dockerfile
