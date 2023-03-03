@@ -1,0 +1,34 @@
+name: Release
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GIT_ACTION_TOKEN }}
+      - uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+      - uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven
+          server-id: sonatype-nexus
+          server-username: SERVER_USERNAME
+          server-password: SERVER_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: GPG_PASSPHRASE
+      - run: mvn -B -ntp dependency:go-offline
+      - run: mvn -B -ntp release:prepare
+      - run: mvn -B -ntp release:perform
+        env:
+          SERVER_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
+          SERVER_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}

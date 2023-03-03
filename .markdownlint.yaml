@@ -1,0 +1,9 @@
+# Default state for all rules
+default: true
+
+# MD009 - Trailing spaces
+MD009:
+  strict: true
+
+# MD013 - Line length
+MD013: false
