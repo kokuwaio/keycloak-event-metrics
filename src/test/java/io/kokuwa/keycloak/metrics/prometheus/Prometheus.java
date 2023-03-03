@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.keycloak.events.EventType;
+
 /**
  * Client to access Prometheus metric values:
  *
@@ -21,28 +23,21 @@ public class Prometheus {
 		this.client = client;
 	}
 
-	public int loginAttempts() {
-		return scrap("keycloak_login_attempts_total").intValue();
+	public int userEvent(EventType type) {
+		return state.stream()
+				.filter(metric -> Objects.equals(metric.name(), "keycloak_event_user_total"))
+				.filter(metric -> Objects.equals(metric.tags().get("type"), type.toString()))
+				.mapToInt(metric -> metric.value().intValue())
+				.sum();
 	}
 
-	public int loginAttempts(String realmName) {
-		return scrap("keycloak_login_attempts_total", "realm", realmName).intValue();
-	}
-
-	public int loginSuccess() {
-		return scrap("keycloak_logins_total").intValue();
-	}
-
-	public int loginSuccess(String realmName) {
-		return scrap("keycloak_logins_total", "realm", realmName).intValue();
-	}
-
-	public int loginFailure() {
-		return scrap("keycloak_failed_login_attempts_total").intValue();
-	}
-
-	public int loginFailure(String realmName) {
-		return scrap("keycloak_failed_login_attempts_total", "realm", realmName).intValue();
+	public int userEvent(EventType type, String realmName) {
+		return state.stream()
+				.filter(metric -> Objects.equals(metric.name(), "keycloak_event_user_total"))
+				.filter(metric -> Objects.equals(metric.tags().get("type"), type.toString()))
+				.filter(metric -> Objects.equals(metric.tags().get("realm"), realmName))
+				.mapToInt(metric -> metric.value().intValue())
+				.sum();
 	}
 
 	public void scrap() {
@@ -62,20 +57,5 @@ public class Prometheus {
 					return new PrometheusMetric(name, tags, value);
 				})
 				.forEach(state::add);
-	}
-
-	private Double scrap(String name) {
-		return state.stream()
-				.filter(metric -> Objects.equals(metric.name(), name))
-				.mapToDouble(PrometheusMetric::value)
-				.sum();
-	}
-
-	private Double scrap(String name, String tag, String value) {
-		return state.stream()
-				.filter(metric -> Objects.equals(metric.name(), name))
-				.filter(metric -> Objects.equals(metric.tags().get(tag), value))
-				.mapToDouble(PrometheusMetric::value)
-				.sum();
 	}
 }

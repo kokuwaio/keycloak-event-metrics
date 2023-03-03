@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.keycloak.events.EventType;
 
 import io.kokuwa.keycloak.metrics.junit.KeycloakClient;
 import io.kokuwa.keycloak.metrics.junit.KeycloakExtension;
@@ -34,15 +35,12 @@ public class KeycloakIT {
 		keycloak.createUser(realmName2, username2, password2);
 
 		prometheus.scrap();
-		var loginAttemptsBefore = prometheus.loginAttempts();
-		var loginAttemptsBefore1 = prometheus.loginAttempts(realmId1);
-		var loginAttemptsBefore2 = prometheus.loginAttempts(realmId2);
-		var loginSuccessBefore = prometheus.loginSuccess();
-		var loginSuccessBefore1 = prometheus.loginSuccess(realmId1);
-		var loginSuccessBefore2 = prometheus.loginSuccess(realmId2);
-		var loginFailureBefore = prometheus.loginFailure();
-		var loginFailureBefore1 = prometheus.loginFailure(realmId1);
-		var loginFailureBefore2 = prometheus.loginFailure(realmId2);
+		var loginBefore = prometheus.userEvent(EventType.LOGIN);
+		var loginBefore1 = prometheus.userEvent(EventType.LOGIN, realmId1);
+		var loginBefore2 = prometheus.userEvent(EventType.LOGIN, realmId2);
+		var loginErrorBefore = prometheus.userEvent(EventType.LOGIN_ERROR);
+		var loginErrorBefore1 = prometheus.userEvent(EventType.LOGIN_ERROR, realmId1);
+		var loginErrorBefore2 = prometheus.userEvent(EventType.LOGIN_ERROR, realmId2);
 
 		assertTrue(keycloak.login(realmName1, username1, password1));
 		assertTrue(keycloak.login(realmName1, username1, password1));
@@ -50,25 +48,19 @@ public class KeycloakIT {
 		assertFalse(keycloak.login(realmName2, username2, "nope"));
 
 		prometheus.scrap();
-		var loginAttemptsAfter = prometheus.loginAttempts();
-		var loginAttemptsAfter1 = prometheus.loginAttempts(realmId1);
-		var loginAttemptsAfter2 = prometheus.loginAttempts(realmId2);
-		var loginSuccessAfter = prometheus.loginSuccess();
-		var loginSuccessAfter1 = prometheus.loginSuccess(realmId1);
-		var loginSuccessAfter2 = prometheus.loginSuccess(realmId2);
-		var loginFailureAfter = prometheus.loginFailure();
-		var loginFailureAfter1 = prometheus.loginFailure(realmId1);
-		var loginFailureAfter2 = prometheus.loginFailure(realmId2);
+		var loginAfter = prometheus.userEvent(EventType.LOGIN);
+		var loginAfter1 = prometheus.userEvent(EventType.LOGIN, realmId1);
+		var loginAfter2 = prometheus.userEvent(EventType.LOGIN, realmId2);
+		var loginErrorAfter = prometheus.userEvent(EventType.LOGIN_ERROR);
+		var loginErrorAfter1 = prometheus.userEvent(EventType.LOGIN_ERROR, realmId1);
+		var loginErrorAfter2 = prometheus.userEvent(EventType.LOGIN_ERROR, realmId2);
 
-		assertAll("promethus",
-				() -> assertEquals(loginAttemptsBefore + 4, loginAttemptsAfter, "login attempts total"),
-				() -> assertEquals(loginAttemptsBefore1 + 2, loginAttemptsAfter1, "login attempts #1"),
-				() -> assertEquals(loginAttemptsBefore2 + 2, loginAttemptsAfter2, "login attempts #2"),
-				() -> assertEquals(loginSuccessBefore + 3, loginSuccessAfter, "login success total"),
-				() -> assertEquals(loginSuccessBefore1 + 2, loginSuccessAfter1, "login success #1"),
-				() -> assertEquals(loginSuccessBefore2 + 1, loginSuccessAfter2, "login success #2"),
-				() -> assertEquals(loginFailureBefore + 1, loginFailureAfter, "login failure total"),
-				() -> assertEquals(loginFailureBefore1 + 0, loginFailureAfter1, "login failure #1"),
-				() -> assertEquals(loginFailureBefore2 + 1, loginFailureAfter2, "login failure #2"));
+		assertAll("prometheus",
+				() -> assertEquals(loginBefore + 3, loginAfter, "login success total"),
+				() -> assertEquals(loginBefore1 + 2, loginAfter1, "login success #1"),
+				() -> assertEquals(loginBefore2 + 1, loginAfter2, "login success #2"),
+				() -> assertEquals(loginErrorBefore + 1, loginErrorAfter, "login failure total"),
+				() -> assertEquals(loginErrorBefore1 + 0, loginErrorAfter1, "login failure #1"),
+				() -> assertEquals(loginErrorBefore2 + 1, loginErrorAfter2, "login failure #2"));
 	}
 }

@@ -61,9 +61,9 @@ jobs:
           server-username: SERVER_USERNAME
           server-password: SERVER_PASSWORD
       - run: mvn -B -ntp dependency:go-offline
-      - run: mvn -B -ntp verify -Dcheckstyle.skip
+      - run: mvn -B -ntp verify -Dcheckstyle.skip -Dmaven.test.redirectTestOutputToFile=false
         if: ${{ github.ref != 'refs/heads/main' }}
-      - run: mvn -B -ntp deploy -Dcheckstyle.skip
+      - run: mvn -B -ntp deploy -Dcheckstyle.skip -Dmaven.test.redirectTestOutputToFile=false
         if: ${{ github.ref == 'refs/heads/main' }}
         env:
           SERVER_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}

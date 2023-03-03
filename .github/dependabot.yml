@@ -3,9 +3,12 @@ updates:
   - package-ecosystem: maven
     directory: /
     schedule:
-      interval: daily
-    allow:
-      - dependency-name: org.keycloak:keycloak-parent
+      interval: monthly
+      day: monday
+      # github parses time without quotes to int
+      # yamllint disable-line rule:quoted-strings
+      time: "09:00"
+      timezone: Europe/Berlin
   - package-ecosystem: github-actions
     directory: /
     schedule:

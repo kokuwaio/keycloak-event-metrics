@@ -4,10 +4,10 @@
 
 	<groupId>io.kokuwa.keycloak</groupId>
 	<artifactId>keycloak-event-metrics</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0-SNAPSHOT</version>
 
 	<name>Keycloak Metrics</name>
-	<description>Provides metrics for Keycloak events</description>
+	<description>Provides metrics for Keycloak user/admin events</description>
 	<url>https://github.com/kokuwaio/keycloak-event-metrics</url>
 	<inceptionYear>2023</inceptionYear>
 	<organization>
@@ -210,6 +210,7 @@
 					<version>${version.org.apache.maven.plugins.surefire}</version>
 					<configuration>
 						<failIfNoTests>true</failIfNoTests>
+						<redirectTestOutputToFile>${maven.test.redirectTestOutputToFile}</redirectTestOutputToFile>
 					</configuration>
 				</plugin>
 				<plugin>
