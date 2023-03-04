@@ -16,6 +16,11 @@ import io.kokuwa.keycloak.metrics.junit.KeycloakClient;
 import io.kokuwa.keycloak.metrics.junit.KeycloakExtension;
 import io.kokuwa.keycloak.metrics.prometheus.Prometheus;
 
+/**
+ * Integration tests with Keycloak.
+ *
+ * @author Stephan Schnabel
+ */
 @ExtendWith(KeycloakExtension.class)
 public class KeycloakIT {
 

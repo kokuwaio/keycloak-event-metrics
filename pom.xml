@@ -99,6 +99,7 @@
 		<!-- dependencies -->
 
 		<version.org.keycloak>21.0.1</version.org.keycloak>
+		<version.org.mockito>5.1.1</version.org.mockito>
 		<version.org.testcontainers>1.17.6</version.org.testcontainers>
 
 	</properties>
@@ -116,6 +117,11 @@
 			</dependency>
 
 			<!-- test -->
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-junit-jupiter</artifactId>
+				<version>${version.org.mockito}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.testcontainers</groupId>
 				<artifactId>testcontainers-bom</artifactId>
@@ -162,6 +168,11 @@
 		</dependency>
 
 		<!-- test -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>junit-jupiter</artifactId>
