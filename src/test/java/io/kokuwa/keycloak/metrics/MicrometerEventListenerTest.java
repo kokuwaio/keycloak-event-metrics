@@ -21,9 +21,12 @@ import org.keycloak.events.EventType;
 import org.keycloak.events.admin.AdminEvent;
 import org.keycloak.events.admin.OperationType;
 import org.keycloak.events.admin.ResourceType;
+import org.keycloak.models.ClientModel;
+import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.RealmModel;
+import org.keycloak.models.RealmProvider;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -38,8 +41,14 @@ import io.micrometer.core.instrument.MeterRegistry;
 @ExtendWith(MockitoExtension.class)
 public class MicrometerEventListenerTest {
 
-	@InjectMocks
-	MicrometerEventListener listener;
+	@Mock
+	KeycloakSession session;
+	@Mock
+	RealmProvider realmProvider;
+	@Mock
+	RealmModel realmModel;
+	@Mock
+	ClientModel clientModel;
 	@Mock
 	MeterRegistry registry;
 	@Mock
@@ -54,39 +63,91 @@ public class MicrometerEventListenerTest {
 		when(registry.counter(metricCaptor.capture(), tagsCaptor.capture())).thenReturn(counter);
 	}
 
-	@DisplayName("onEvent(Event)")
+	@DisplayName("onEvent(true)")
 	@Nested
 	class onEvent {
 
-		@DisplayName("without error")
+		@DisplayName("replace(true) - without error")
 		@Test
-		void withoutError() {
+		void replaceWithoutError() {
+
+			var realmId = UUID.randomUUID().toString();
+			var realmName = UUID.randomUUID().toString();
+			var clientId = UUID.randomUUID().toString();
+			var clientName = UUID.randomUUID().toString();
+			var type = EventType.LOGIN;
+
+			when(session.realms()).thenReturn(realmProvider);
+			when(realmProvider.getRealm(realmId)).thenReturn(realmModel);
+			when(realmModel.getName()).thenReturn(realmName);
+			when(realmModel.getClientById(clientId)).thenReturn(clientModel);
+			when(clientModel.getClientId()).thenReturn(clientName);
+
+			listener(true).onEvent(toEvent(realmId, clientId, type, null));
+			assertEvent(realmName, clientName, type.toString(), "");
+		}
+
+		@DisplayName("replace(true) - with error")
+		@Test
+		void replaceWithError() {
+
+			var realmId = UUID.randomUUID().toString();
+			var realmName = UUID.randomUUID().toString();
+			var clientId = UUID.randomUUID().toString();
+			var clientName = UUID.randomUUID().toString();
+			var type = EventType.LOGIN_ERROR;
+			var error = UUID.randomUUID().toString();
+
+			when(session.realms()).thenReturn(realmProvider);
+			when(realmProvider.getRealm(realmId)).thenReturn(realmModel);
+			when(realmModel.getName()).thenReturn(realmName);
+			when(realmModel.getClientById(clientId)).thenReturn(clientModel);
+			when(clientModel.getClientId()).thenReturn(clientName);
+
+			listener(true).onEvent(toEvent(realmId, clientId, type, error));
+			assertEvent(realmName, clientName, type.toString(), error);
+		}
+
+		@DisplayName("replace(true) - all fields empty")
+		@Test
+		void replaceFieldsEmpty() {
+
+			when(session.realms()).thenReturn(realmProvider);
+			when(realmProvider.getRealm(any())).thenReturn(null);
+
+			listener(true).onEvent(toEvent(null, null, null, null));
+			assertEvent("", "", "", "");
+		}
+
+		@DisplayName("replace(false) - without error")
+		@Test
+		void notReplaceWithoutError() {
 
 			var realmId = UUID.randomUUID().toString();
 			var clientId = UUID.randomUUID().toString();
 			var type = EventType.LOGIN;
 
-			listener.onEvent(toEvent(realmId, clientId, type, null));
+			listener(false).onEvent(toEvent(realmId, clientId, type, null));
 			assertEvent(realmId, clientId, type.toString(), "");
 		}
 
-		@DisplayName("with error")
+		@DisplayName("replace(false) - with error")
 		@Test
-		void withError() {
+		void notReplaceWithError() {
 
 			var realmId = UUID.randomUUID().toString();
 			var clientId = UUID.randomUUID().toString();
 			var type = EventType.LOGIN_ERROR;
 			var error = UUID.randomUUID().toString();
 
-			listener.onEvent(toEvent(realmId, clientId, type, error));
+			listener(false).onEvent(toEvent(realmId, clientId, type, error));
 			assertEvent(realmId, clientId, type.toString(), error);
 		}
 
-		@DisplayName("all fields empty")
+		@DisplayName("replace(false) - all fields empty")
 		@Test
-		void fieldsEmpty() {
-			listener.onEvent(toEvent(null, null, null, null));
+		void notReplaceFieldsEmpty() {
+			listener(false).onEvent(toEvent(null, null, null, null));
 			assertEvent("", "", "", "");
 		}
 
@@ -112,35 +173,81 @@ public class MicrometerEventListenerTest {
 	@Nested
 	class onAdminEvent {
 
-		@DisplayName("without error")
+		@DisplayName("replace(true) - without error")
 		@Test
-		void withoutError() {
+		void replaceWithoutError() {
+
+			var realmId = UUID.randomUUID().toString();
+			var realmName = UUID.randomUUID().toString();
+			var resource = ResourceType.USER;
+			var operation = OperationType.CREATE;
+
+			when(session.realms()).thenReturn(realmProvider);
+			when(realmProvider.getRealm(realmId)).thenReturn(realmModel);
+			when(realmModel.getName()).thenReturn(realmName);
+
+			listener(true).onEvent(toAdminEvent(realmId, resource, operation, null), false);
+			assertAdminEvent(realmName, resource.toString(), operation.toString(), "");
+		}
+
+		@DisplayName("replace(true) - with error")
+		@Test
+		void replaceWithError() {
+
+			var realmId = UUID.randomUUID().toString();
+			var realmName = UUID.randomUUID().toString();
+			var resource = ResourceType.USER;
+			var operation = OperationType.CREATE;
+			var error = UUID.randomUUID().toString();
+
+			when(session.realms()).thenReturn(realmProvider);
+			when(realmProvider.getRealm(realmId)).thenReturn(realmModel);
+			when(realmModel.getName()).thenReturn(realmName);
+
+			listener(true).onEvent(toAdminEvent(realmId, resource, operation, error), false);
+			assertAdminEvent(realmName, resource.toString(), operation.toString(), error);
+		}
+
+		@DisplayName("replace(true) - all fields empty")
+		@Test
+		void replaceFieldsEmpty() {
+
+			when(session.realms()).thenReturn(realmProvider);
+			when(realmProvider.getRealm(any())).thenReturn(null);
+
+			listener(true).onEvent(toAdminEvent(null, null, null, null), false);
+			assertAdminEvent("", "", "", "");
+		}
+
+		@DisplayName("replace(false) - without error")
+		@Test
+		void noReplaceWithoutError() {
 
 			var realmId = UUID.randomUUID().toString();
 			var resource = ResourceType.USER;
 			var operation = OperationType.CREATE;
 
-			listener.onEvent(toAdminEvent(realmId, resource, operation, null), false);
+			listener(false).onEvent(toAdminEvent(realmId, resource, operation, null), false);
 			assertAdminEvent(realmId, resource.toString(), operation.toString(), "");
 		}
 
-		@DisplayName("with error")
+		@DisplayName("replace(false) - with error")
 		@Test
-		void withError() {
+		void noReplaceWithError() {
 
 			var realmId = UUID.randomUUID().toString();
 			var resource = ResourceType.USER;
 			var operation = OperationType.CREATE;
 			var error = UUID.randomUUID().toString();
 
-			listener.onEvent(toAdminEvent(realmId, resource, operation, error), false);
+			listener(false).onEvent(toAdminEvent(realmId, resource, operation, error), false);
 			assertAdminEvent(realmId, resource.toString(), operation.toString(), error);
 		}
 
-		@DisplayName("all fields empty")
+		@DisplayName("replace(false) - all fields empty")
 		@Test
-		void fieldsEmpty() {
-			listener.onEvent(toAdminEvent(null, null, null, null), false);
+		void noReplaceFieldsEmpty() {
+			listener(false).onEvent(toAdminEvent(null, null, null, null), false);
 			assertAdminEvent("", "", "", "");
 		}
 
@@ -160,6 +267,10 @@ public class MicrometerEventListenerTest {
 					"operation", operation,
 					"error", error));
 		}
+	}
+
+	private MicrometerEventListener listener(boolean replace) {
+		return new MicrometerEventListener(registry, session, replace);
 	}
 
 	private void assertCounter(String metric, Map<String, String> tags) {

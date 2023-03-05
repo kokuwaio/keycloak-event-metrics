@@ -29,18 +29,20 @@ public class KeycloakClient {
 		this.token = token;
 	}
 
-	public String createRealm(String realmName) {
-		var client = new ClientRepresentation();
-		client.setClientId("test");
-		client.setPublicClient(true);
-		client.setDirectAccessGrantsEnabled(true);
+	public void createRealm(String realmName) {
 		var realm = new RealmRepresentation();
 		realm.setEnabled(true);
 		realm.setRealm(realmName);
 		realm.setEventsListeners(List.of("metrics-listener"));
-		realm.setClients(List.of(client));
 		keycloak.realms().create(realm);
-		return keycloak.realms().realm(realmName).toRepresentation().getId();
+	}
+
+	public void createClient(String realmName, String clientId) {
+		var client = new ClientRepresentation();
+		client.setClientId(clientId);
+		client.setPublicClient(true);
+		client.setDirectAccessGrantsEnabled(true);
+		keycloak.realms().realm(realmName).clients().create(client);
 	}
 
 	public void createUser(String realmName, String username, String password) {
@@ -57,10 +59,10 @@ public class KeycloakClient {
 		keycloak.realms().realm(realmName).users().create(user);
 	}
 
-	public boolean login(String realmName, String username, String password) {
+	public boolean login(String clientId, String realmName, String username, String password) {
 		try {
 			token.grantToken(realmName, new MultivaluedHashMap<>(Map.of(
-					OAuth2Constants.CLIENT_ID, "test",
+					OAuth2Constants.CLIENT_ID, clientId,
 					OAuth2Constants.GRANT_TYPE, OAuth2Constants.PASSWORD,
 					OAuth2Constants.USERNAME, username,
 					OAuth2Constants.PASSWORD, password)));

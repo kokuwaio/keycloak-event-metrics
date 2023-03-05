@@ -28,37 +28,42 @@ public class KeycloakIT {
 	@Test
 	void loginAndAttempts(KeycloakClient keycloak, Prometheus prometheus) {
 
+		var clientId1 = UUID.randomUUID().toString();
 		var realmName1 = UUID.randomUUID().toString();
 		var username1 = UUID.randomUUID().toString();
 		var password1 = UUID.randomUUID().toString();
+		keycloak.createRealm(realmName1);
+		keycloak.createClient(realmName1, clientId1);
+		keycloak.createUser(realmName1, username1, password1);
+
+		var clientId2 = UUID.randomUUID().toString();
 		var realmName2 = UUID.randomUUID().toString();
 		var username2 = UUID.randomUUID().toString();
 		var password2 = UUID.randomUUID().toString();
-		var realmId1 = keycloak.createRealm(realmName1);
-		var realmId2 = keycloak.createRealm(realmName2);
-		keycloak.createUser(realmName1, username1, password1);
+		keycloak.createRealm(realmName2);
+		keycloak.createClient(realmName2, clientId2);
 		keycloak.createUser(realmName2, username2, password2);
 
 		prometheus.scrap();
 		var loginBefore = prometheus.userEvent(EventType.LOGIN);
-		var loginBefore1 = prometheus.userEvent(EventType.LOGIN, realmId1);
-		var loginBefore2 = prometheus.userEvent(EventType.LOGIN, realmId2);
+		var loginBefore1 = prometheus.userEvent(EventType.LOGIN, realmName1, clientId1);
+		var loginBefore2 = prometheus.userEvent(EventType.LOGIN, realmName2, clientId2);
 		var loginErrorBefore = prometheus.userEvent(EventType.LOGIN_ERROR);
-		var loginErrorBefore1 = prometheus.userEvent(EventType.LOGIN_ERROR, realmId1);
-		var loginErrorBefore2 = prometheus.userEvent(EventType.LOGIN_ERROR, realmId2);
+		var loginErrorBefore1 = prometheus.userEvent(EventType.LOGIN_ERROR, realmName1, clientId1);
+		var loginErrorBefore2 = prometheus.userEvent(EventType.LOGIN_ERROR, realmName2, clientId2);
 
-		assertTrue(keycloak.login(realmName1, username1, password1));
-		assertTrue(keycloak.login(realmName1, username1, password1));
-		assertTrue(keycloak.login(realmName2, username2, password2));
-		assertFalse(keycloak.login(realmName2, username2, "nope"));
+		assertTrue(keycloak.login(clientId1, realmName1, username1, password1));
+		assertTrue(keycloak.login(clientId1, realmName1, username1, password1));
+		assertTrue(keycloak.login(clientId2, realmName2, username2, password2));
+		assertFalse(keycloak.login(clientId2, realmName2, username2, "nope"));
 
 		prometheus.scrap();
 		var loginAfter = prometheus.userEvent(EventType.LOGIN);
-		var loginAfter1 = prometheus.userEvent(EventType.LOGIN, realmId1);
-		var loginAfter2 = prometheus.userEvent(EventType.LOGIN, realmId2);
+		var loginAfter1 = prometheus.userEvent(EventType.LOGIN, realmName1, clientId1);
+		var loginAfter2 = prometheus.userEvent(EventType.LOGIN, realmName2, clientId2);
 		var loginErrorAfter = prometheus.userEvent(EventType.LOGIN_ERROR);
-		var loginErrorAfter1 = prometheus.userEvent(EventType.LOGIN_ERROR, realmId1);
-		var loginErrorAfter2 = prometheus.userEvent(EventType.LOGIN_ERROR, realmId2);
+		var loginErrorAfter1 = prometheus.userEvent(EventType.LOGIN_ERROR, realmName1, clientId1);
+		var loginErrorAfter2 = prometheus.userEvent(EventType.LOGIN_ERROR, realmName2, clientId2);
 
 		assertAll("prometheus",
 				() -> assertEquals(loginBefore + 3, loginAfter, "login success total"),
