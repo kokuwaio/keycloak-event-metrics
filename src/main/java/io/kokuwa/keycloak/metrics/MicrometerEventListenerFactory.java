@@ -17,7 +17,7 @@ import io.micrometer.core.instrument.MeterRegistry;
  */
 public class MicrometerEventListenerFactory implements EventListenerProviderFactory {
 
-	private MicrometerEventRecorder recorder;
+	private MeterRegistry registry;
 
 	@Override
 	public String getId() {
@@ -29,12 +29,12 @@ public class MicrometerEventListenerFactory implements EventListenerProviderFact
 
 	@Override
 	public void postInit(KeycloakSessionFactory factory) {
-		recorder = new MicrometerEventRecorder(CDI.current().select(MeterRegistry.class).get());
+		registry = CDI.current().select(MeterRegistry.class).get();
 	}
 
 	@Override
 	public EventListenerProvider create(KeycloakSession session) {
-		return new MicrometerEventListener(recorder);
+		return new MicrometerEventListener(registry);
 	}
 
 	@Override
