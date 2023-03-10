@@ -43,6 +43,23 @@ keycloak_event_admin_total{error="",operation="CREATE",realm="1fdb3465-1675-49e8
 keycloak_event_admin_total{error="",operation="CREATE",realm="9039a0b5-e8c9-437a-a02e-9d91b04548a4",resource="USER",} 1.0
 ```
 
+## Configuration
+
+### `KC_METRICS_EVENT_REPLACE_IDS`
+
+If set to `true` than replace model ids with names:
+
+* [RealmModel#getId()](https://github.com/keycloak/keycloak/blob/main/server-spi/src/main/java/org/keycloak/models/RealmModel.java#L82) with [RealmModel#getName()](https://github.com/keycloak/keycloak/blob/main/server-spi/src/main/java/org/keycloak/models/RealmModel.java#L84)
+* [ClientModel#getId()](https://github.com/keycloak/keycloak/blob/main/server-spi/src/main/java/org/keycloak/models/ClientModel.java#L106) with [ClientModel#getClientId()](https://github.com/keycloak/keycloak/blob/main/server-spi/src/main/java/org/keycloak/models/ClientModel.java#L112)
+
+Metrics:
+
+```txt
+keycloak_event_user_total{client="test-client",error="",realm="test-realm",type="LOGIN",} 2.0
+keycloak_event_user_total{client="other-client",error="",realm="other-realm",type="LOGIN",} 1.0
+keycloak_event_user_total{client="other-client",error="invalid_user_credentials",realm="other-realm",type="LOGIN_ERROR",} 1.0
+```
+
 ## Installation
 
 ### Testcontainers

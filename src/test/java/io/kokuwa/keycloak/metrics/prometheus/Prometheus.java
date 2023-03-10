@@ -31,11 +31,12 @@ public class Prometheus {
 				.sum();
 	}
 
-	public int userEvent(EventType type, String realmName) {
+	public int userEvent(EventType type, String realmName, String clientId) {
 		return state.stream()
 				.filter(metric -> Objects.equals(metric.name(), "keycloak_event_user_total"))
 				.filter(metric -> Objects.equals(metric.tags().get("type"), type.toString()))
 				.filter(metric -> Objects.equals(metric.tags().get("realm"), realmName))
+				.filter(metric -> Objects.equals(metric.tags().get("client"), clientId))
 				.mapToInt(metric -> metric.value().intValue())
 				.sum();
 	}
