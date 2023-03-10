@@ -4,7 +4,7 @@
 
 	<groupId>io.kokuwa.keycloak</groupId>
 	<artifactId>keycloak-event-metrics</artifactId>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.2.0-SNAPSHOT</version>
 
 	<name>Keycloak Metrics</name>
 	<description>Provides metrics for Keycloak user/admin events</description>
