@@ -6,6 +6,16 @@ Provides metrics for Keycloak user/admin events.
 [![Maven Central](https://img.shields.io/maven-central/v/io.kokuwa.keycloak/keycloak-event-metrics.svg?label=Maven%20Central)](https://central.sonatype.com/search?namespace=io.kokuwa.keycloak&q=keycloak-event-metrics)
 [![CI](https://img.shields.io/github/actions/workflow/status/kokuwaio/keycloak-event-metrics/ci.yaml?branch=main&label=CI)](https://github.com/kokuwaio/keycloak-event-metrics/actions/workflows/ci.yaml?query=branch%3Amain)
 
+## Why?
+
+[aerogear/keycloak-metrics-spi](https://github.com/aerogear/keycloak-metrics-spi) is an alternative to this plugin but is not well maintained. This implementation is different:
+
+* no Prometheus push (event listener only adds counter to Micrometer)
+* no realm specific Prometheus endpoint, only `/metrics` (from Quarkus)
+* no jvm/http metrics, this is [already](https://www.keycloak.org/server/configuration-metrics#_available_metrics) included in Keycloak
+* different metric names, can relace model ids with name (see [configuration](#kc_metrics_event_replace_ids))
+* deployed to maven central and very small (10 kb vs. 229 KB [aerogear/keycloak-metrics-spi](https://github.com/aerogear/keycloak-metrics-spi))
+
 ## What?
 
 Resuses micrometer from Quarkus distribution to add metrics for Keycloak for events.
