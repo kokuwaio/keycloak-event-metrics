@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -22,9 +23,9 @@ import org.keycloak.events.admin.AdminEvent;
 import org.keycloak.events.admin.OperationType;
 import org.keycloak.events.admin.ResourceType;
 import org.keycloak.models.ClientModel;
+import org.keycloak.models.KeycloakContext;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
-import org.keycloak.models.RealmProvider;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -44,11 +45,11 @@ public class MicrometerEventListenerTest {
 	@Mock
 	KeycloakSession session;
 	@Mock
-	RealmProvider realmProvider;
-	@Mock
 	RealmModel realmModel;
 	@Mock
 	ClientModel clientModel;
+	@Mock
+	KeycloakContext context;
 	@Mock
 	MeterRegistry registry;
 	@Mock
@@ -77,10 +78,12 @@ public class MicrometerEventListenerTest {
 			var clientName = UUID.randomUUID().toString();
 			var type = EventType.LOGIN;
 
-			when(session.realms()).thenReturn(realmProvider);
-			when(realmProvider.getRealm(realmId)).thenReturn(realmModel);
+			when(session.getContext()).thenReturn(context);
+			when(context.getRealm()).thenReturn(realmModel);
+			when(context.getClient()).thenReturn(clientModel);
+			when(realmModel.getId()).thenReturn(realmId);
 			when(realmModel.getName()).thenReturn(realmName);
-			when(realmModel.getClientById(clientId)).thenReturn(clientModel);
+			when(clientModel.getId()).thenReturn(clientId);
 			when(clientModel.getClientId()).thenReturn(clientName);
 
 			listener(true).onEvent(toEvent(realmId, clientId, type, null));
@@ -98,10 +101,12 @@ public class MicrometerEventListenerTest {
 			var type = EventType.LOGIN_ERROR;
 			var error = UUID.randomUUID().toString();
 
-			when(session.realms()).thenReturn(realmProvider);
-			when(realmProvider.getRealm(realmId)).thenReturn(realmModel);
+			when(session.getContext()).thenReturn(context);
+			when(context.getRealm()).thenReturn(realmModel);
+			when(context.getClient()).thenReturn(clientModel);
+			when(realmModel.getId()).thenReturn(realmId);
 			when(realmModel.getName()).thenReturn(realmName);
-			when(realmModel.getClientById(clientId)).thenReturn(clientModel);
+			when(clientModel.getId()).thenReturn(clientId);
 			when(clientModel.getClientId()).thenReturn(clientName);
 
 			listener(true).onEvent(toEvent(realmId, clientId, type, error));
@@ -112,11 +117,17 @@ public class MicrometerEventListenerTest {
 		@Test
 		void replaceFieldsEmpty() {
 
-			when(session.realms()).thenReturn(realmProvider);
-			when(realmProvider.getRealm(any())).thenReturn(null);
+			var realmName = UUID.randomUUID().toString();
+			var clientName = UUID.randomUUID().toString();
+
+			when(session.getContext()).thenReturn(context);
+			when(context.getRealm()).thenReturn(realmModel);
+			when(context.getClient()).thenReturn(clientModel);
+			when(realmModel.getName()).thenReturn(realmName);
+			when(clientModel.getClientId()).thenReturn(clientName);
 
 			listener(true).onEvent(toEvent(null, null, null, null));
-			assertEvent("", "", "", "");
+			assertEvent(realmName, clientName, "", "");
 		}
 
 		@DisplayName("replace(false) - without error")
@@ -182,8 +193,9 @@ public class MicrometerEventListenerTest {
 			var resource = ResourceType.USER;
 			var operation = OperationType.CREATE;
 
-			when(session.realms()).thenReturn(realmProvider);
-			when(realmProvider.getRealm(realmId)).thenReturn(realmModel);
+			when(session.getContext()).thenReturn(context);
+			when(context.getRealm()).thenReturn(realmModel);
+			when(realmModel.getId()).thenReturn(realmId);
 			when(realmModel.getName()).thenReturn(realmName);
 
 			listener(true).onEvent(toAdminEvent(realmId, resource, operation, null), false);
@@ -200,8 +212,9 @@ public class MicrometerEventListenerTest {
 			var operation = OperationType.CREATE;
 			var error = UUID.randomUUID().toString();
 
-			when(session.realms()).thenReturn(realmProvider);
-			when(realmProvider.getRealm(realmId)).thenReturn(realmModel);
+			when(session.getContext()).thenReturn(context);
+			when(context.getRealm()).thenReturn(realmModel);
+			when(realmModel.getId()).thenReturn(realmId);
 			when(realmModel.getName()).thenReturn(realmName);
 
 			listener(true).onEvent(toAdminEvent(realmId, resource, operation, error), false);
@@ -212,11 +225,14 @@ public class MicrometerEventListenerTest {
 		@Test
 		void replaceFieldsEmpty() {
 
-			when(session.realms()).thenReturn(realmProvider);
-			when(realmProvider.getRealm(any())).thenReturn(null);
+			var realmName = UUID.randomUUID().toString();
+
+			when(session.getContext()).thenReturn(context);
+			when(context.getRealm()).thenReturn(realmModel);
+			when(realmModel.getName()).thenReturn(realmName);
 
 			listener(true).onEvent(toAdminEvent(null, null, null, null), false);
-			assertAdminEvent("", "", "", "");
+			assertAdminEvent(realmName, "", "", "");
 		}
 
 		@DisplayName("replace(false) - without error")
@@ -277,8 +293,13 @@ public class MicrometerEventListenerTest {
 		verify(registry).counter(anyString(), any(String[].class));
 		verify(counter).increment();
 		assertEquals(metric, metricCaptor.getValue(), "metric");
-		assertEquals(tags, IntStream
+		var expectedTags = new TreeMap<>(tags);
+		var actualTags = IntStream
 				.range(0, tagsCaptor.getValue().length / 2).mapToObj(i -> i * 2)
-				.collect(Collectors.toMap(i -> tagsCaptor.getValue()[i], i -> tagsCaptor.getValue()[i + 1])), "tags");
+				.collect(Collectors.toMap(
+						i -> tagsCaptor.getValue()[i],
+						i -> tagsCaptor.getValue()[i + 1],
+						(i, j) -> i, TreeMap::new));
+		assertEquals(expectedTags, actualTags, "tags");
 	}
 }
