@@ -2,6 +2,7 @@ version: 2
 updates:
   - package-ecosystem: maven
     directory: /
+    open-pull-requests-limit: 20
     schedule:
       interval: monthly
       day: monday
@@ -11,6 +12,7 @@ updates:
       timezone: Europe/Berlin
   - package-ecosystem: github-actions
     directory: /
+    open-pull-requests-limit: 10
     schedule:
       interval: monthly
       day: monday
