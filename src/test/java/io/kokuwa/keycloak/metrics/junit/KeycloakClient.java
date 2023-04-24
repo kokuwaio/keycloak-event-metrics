@@ -2,6 +2,7 @@ package io.kokuwa.keycloak.metrics.junit;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.core.MultivaluedHashMap;
@@ -31,6 +32,7 @@ public class KeycloakClient {
 
 	public void createRealm(String realmName) {
 		var realm = new RealmRepresentation();
+		realm.setId(UUID.randomUUID().toString());
 		realm.setEnabled(true);
 		realm.setRealm(realmName);
 		realm.setEventsListeners(List.of("metrics-listener"));
@@ -39,6 +41,7 @@ public class KeycloakClient {
 
 	public void createClient(String realmName, String clientId) {
 		var client = new ClientRepresentation();
+		client.setId(UUID.randomUUID().toString());
 		client.setClientId(clientId);
 		client.setPublicClient(true);
 		client.setDirectAccessGrantsEnabled(true);
