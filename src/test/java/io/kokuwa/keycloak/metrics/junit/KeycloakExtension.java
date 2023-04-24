@@ -60,7 +60,6 @@ public class KeycloakExtension implements BeforeAllCallback, ParameterResolver {
 				.withEnv("KC_LOG_CONSOLE_COLOR", "true")
 				.withEnv("KC_HEALTH_ENABLED", "true")
 				.withEnv("KC_METRICS_ENABLED", "true")
-				.withEnv("KC_METRICS_EVENT_REPLACE_IDS", "true")
 				.withCopyFileToContainer(MountableFile.forHostPath(jar), "/opt/keycloak/providers/metrics.jar")
 				.withLogConsumer(out -> System.out.print(out.getUtf8String()))
 				.withExposedPorts(8080)

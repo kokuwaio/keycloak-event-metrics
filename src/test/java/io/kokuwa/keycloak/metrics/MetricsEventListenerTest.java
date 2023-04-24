@@ -35,12 +35,12 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 
 /**
- * Test for {@link MicrometerEventListener} with Mockito.
+ * Test for {@link MetricsEventListener} with Mockito.
  *
  * @author Stephan Schnabel
  */
 @ExtendWith(MockitoExtension.class)
-public class MicrometerEventListenerTest {
+public class MetricsEventListenerTest {
 
 	@Mock
 	KeycloakSession session;
@@ -378,8 +378,8 @@ public class MicrometerEventListenerTest {
 		}
 	}
 
-	private MicrometerEventListener listener(boolean replace) {
-		return new MicrometerEventListener(registry, session, replace);
+	private MetricsEventListener listener(boolean replaceIds) {
+		return new MetricsEventListener(registry, replaceIds, session);
 	}
 
 	private void assertCounter(String metric, Map<String, String> tags) {
