@@ -14,7 +14,7 @@ import org.keycloak.events.EventType;
 
 import io.kokuwa.keycloak.metrics.junit.KeycloakClient;
 import io.kokuwa.keycloak.metrics.junit.KeycloakExtension;
-import io.kokuwa.keycloak.metrics.prometheus.Prometheus;
+import io.kokuwa.keycloak.metrics.junit.Prometheus;
 
 /**
  * Integration tests with Keycloak.

@@ -1,4 +1,4 @@
-package io.kokuwa.keycloak.metrics;
+package io.kokuwa.keycloak.metrics.event;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -378,8 +378,8 @@ public class MetricsEventListenerTest {
 		}
 	}
 
-	private MetricsEventListener listener(boolean replaceIds) {
-		return new MetricsEventListener(registry, replaceIds, session);
+	private MetricsEventListener listener(boolean replace) {
+		return new MetricsEventListener(registry, replace, session);
 	}
 
 	private void assertCounter(String metric, Map<String, String> tags) {
