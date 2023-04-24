@@ -1,4 +1,4 @@
-package io.kokuwa.keycloak.metrics.prometheus;
+package io.kokuwa.keycloak.metrics.junit;
 
 import java.util.HashSet;
 import java.util.Map;

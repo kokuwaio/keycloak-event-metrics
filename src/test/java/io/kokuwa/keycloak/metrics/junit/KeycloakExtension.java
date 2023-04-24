@@ -19,9 +19,6 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.MountableFile;
 
-import io.kokuwa.keycloak.metrics.prometheus.Prometheus;
-import io.kokuwa.keycloak.metrics.prometheus.PrometheusClient;
-
 /**
  * JUnit extension to start keycloak.
  *

@@ -1,4 +1,4 @@
-package io.kokuwa.keycloak.metrics.prometheus;
+package io.kokuwa.keycloak.metrics.junit;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;

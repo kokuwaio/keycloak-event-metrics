@@ -1,4 +1,4 @@
-package io.kokuwa.keycloak.metrics;
+package io.kokuwa.keycloak.metrics.event;
 
 import javax.enterprise.inject.spi.CDI;
 
