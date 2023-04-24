@@ -60,7 +60,6 @@ keycloak_event_admin_total{error="",operation="CREATE",realm="9039a0b5-e8c9-437a
 If set to `true` than replace model ids with names:
 
 * [RealmModel#getId()](https://github.com/keycloak/keycloak/blob/main/server-spi/src/main/java/org/keycloak/models/RealmModel.java#L82) with [RealmModel#getName()](https://github.com/keycloak/keycloak/blob/main/server-spi/src/main/java/org/keycloak/models/RealmModel.java#L84)
-* [ClientModel#getId()](https://github.com/keycloak/keycloak/blob/main/server-spi/src/main/java/org/keycloak/models/ClientModel.java#L106) with [ClientModel#getClientId()](https://github.com/keycloak/keycloak/blob/main/server-spi/src/main/java/org/keycloak/models/ClientModel.java#L112)
 
 Metrics:
 

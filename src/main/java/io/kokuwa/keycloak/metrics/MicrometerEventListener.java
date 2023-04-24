@@ -31,7 +31,7 @@ public class MicrometerEventListener implements EventListenerProvider, AutoClose
 		registry.counter("keycloak_event_user",
 				"realm", toBlank(replace ? getRealmName(event.getRealmId()) : event.getRealmId()),
 				"type", toBlank(event.getType()),
-				"client", toBlank(replace ? getClientId(event.getClientId()) : event.getClientId()),
+				"client", toBlank(event.getClientId()),
 				"error", toBlank(event.getError()))
 				.increment();
 	}
@@ -55,15 +55,6 @@ public class MicrometerEventListener implements EventListenerProvider, AutoClose
 			return model.getName();
 		}
 		log.warnv("Failed to resolve realmName for id {0}", id);
-		return id;
-	}
-
-	private String getClientId(String id) {
-		var model = session.getContext().getClient();
-		if (id == null || id.equals(model.getId())) {
-			return model.getClientId();
-		}
-		log.warnv("Failed to resolve clientId for id {0}", id);
 		return id;
 	}
 

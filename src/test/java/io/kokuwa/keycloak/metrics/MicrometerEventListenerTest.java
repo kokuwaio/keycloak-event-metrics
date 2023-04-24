@@ -22,7 +22,6 @@ import org.keycloak.events.EventType;
 import org.keycloak.events.admin.AdminEvent;
 import org.keycloak.events.admin.OperationType;
 import org.keycloak.events.admin.ResourceType;
-import org.keycloak.models.ClientModel;
 import org.keycloak.models.KeycloakContext;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
@@ -46,8 +45,6 @@ public class MicrometerEventListenerTest {
 	KeycloakSession session;
 	@Mock
 	RealmModel realmModel;
-	@Mock
-	ClientModel clientModel;
 	@Mock
 	KeycloakContext context;
 	@Mock
@@ -75,19 +72,15 @@ public class MicrometerEventListenerTest {
 			var realmId = UUID.randomUUID().toString();
 			var realmName = UUID.randomUUID().toString();
 			var clientId = UUID.randomUUID().toString();
-			var clientName = UUID.randomUUID().toString();
 			var type = EventType.LOGIN;
 
 			when(session.getContext()).thenReturn(context);
 			when(context.getRealm()).thenReturn(realmModel);
-			when(context.getClient()).thenReturn(clientModel);
 			when(realmModel.getId()).thenReturn(realmId);
 			when(realmModel.getName()).thenReturn(realmName);
-			when(clientModel.getId()).thenReturn(clientId);
-			when(clientModel.getClientId()).thenReturn(clientName);
 
 			listener(true).onEvent(toEvent(realmId, clientId, type, null));
-			assertEvent(realmName, clientName, type.toString(), "");
+			assertEvent(realmName, clientId, type.toString(), "");
 		}
 
 		@DisplayName("replace(true) - with error")
@@ -97,20 +90,16 @@ public class MicrometerEventListenerTest {
 			var realmId = UUID.randomUUID().toString();
 			var realmName = UUID.randomUUID().toString();
 			var clientId = UUID.randomUUID().toString();
-			var clientName = UUID.randomUUID().toString();
 			var type = EventType.LOGIN_ERROR;
 			var error = UUID.randomUUID().toString();
 
 			when(session.getContext()).thenReturn(context);
 			when(context.getRealm()).thenReturn(realmModel);
-			when(context.getClient()).thenReturn(clientModel);
 			when(realmModel.getId()).thenReturn(realmId);
 			when(realmModel.getName()).thenReturn(realmName);
-			when(clientModel.getId()).thenReturn(clientId);
-			when(clientModel.getClientId()).thenReturn(clientName);
 
 			listener(true).onEvent(toEvent(realmId, clientId, type, error));
-			assertEvent(realmName, clientName, type.toString(), error);
+			assertEvent(realmName, clientId, type.toString(), error);
 		}
 
 		@DisplayName("replace(true) - all fields empty")
@@ -118,16 +107,13 @@ public class MicrometerEventListenerTest {
 		void replaceFieldsEmpty() {
 
 			var realmName = UUID.randomUUID().toString();
-			var clientName = UUID.randomUUID().toString();
 
 			when(session.getContext()).thenReturn(context);
 			when(context.getRealm()).thenReturn(realmModel);
-			when(context.getClient()).thenReturn(clientModel);
 			when(realmModel.getName()).thenReturn(realmName);
-			when(clientModel.getClientId()).thenReturn(clientName);
 
 			listener(true).onEvent(toEvent(null, null, null, null));
-			assertEvent(realmName, clientName, "", "");
+			assertEvent(realmName, "", "", "");
 		}
 
 		@DisplayName("replace(false) - without error")
