@@ -33,7 +33,6 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: maven
-      - run: mvn -B -ntp dependency:go-offline
       - run: mvn -B -ntp javadoc:javadoc-no-fork -Ddoclint=all
 
   checkstyle:
@@ -45,7 +44,6 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: maven
-      - run: mvn -B -ntp dependency:go-offline
       - run: mvn -B -ntp checkstyle:check
 
   build:
@@ -60,7 +58,6 @@ jobs:
           server-id: sonatype-nexus
           server-username: SERVER_USERNAME
           server-password: SERVER_PASSWORD
-      - run: mvn -B -ntp dependency:go-offline
       - run: mvn -B -ntp verify -Dcheckstyle.skip -Dmaven.test.redirectTestOutputToFile=false
         if: ${{ github.ref != 'refs/heads/main' }}
       - run: mvn -B -ntp deploy -Dcheckstyle.skip -Dmaven.test.redirectTestOutputToFile=false
@@ -68,3 +65,22 @@ jobs:
         env:
           SERVER_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
           SERVER_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
+
+  versions:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - 21.0.0
+          - 21.0.1
+          - 21.0.2
+          - 21.1.0
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven
+      - run: mvn -B -ntp verify -Dcheckstyle.skip -Dmaven.test.redirectTestOutputToFile=false -Dversion.org.keycloak=${{ matrix.version }}

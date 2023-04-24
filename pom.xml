@@ -98,7 +98,7 @@
 
 		<!-- dependencies -->
 
-		<version.org.keycloak>21.0.2</version.org.keycloak>
+		<version.org.keycloak>21.1.0</version.org.keycloak>
 		<version.org.mockito>5.2.0</version.org.mockito>
 		<version.org.testcontainers>1.18.0</version.org.testcontainers>
 
@@ -158,6 +158,14 @@
 				<exclusion><!-- references ancient `commons-io` -->
 					<groupId>com.openshift</groupId>
 					<artifactId>openshift-restclient-java</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.keycloak</groupId>
+					<artifactId>keycloak-admin-ui</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.keycloak</groupId>
+					<artifactId>keycloak-account-ui</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -374,7 +382,7 @@
 							</execution>
 						</executions>
 					</plugin>
-		
+
 					<!-- add javadoc for downstream projects -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
