@@ -25,6 +25,7 @@ import org.keycloak.events.admin.ResourceType;
 import org.keycloak.models.KeycloakContext;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
+import org.keycloak.models.RealmProvider;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -45,6 +46,8 @@ public class MicrometerEventListenerTest {
 	KeycloakSession session;
 	@Mock
 	RealmModel realmModel;
+	@Mock
+	RealmProvider realmProvider;
 	@Mock
 	KeycloakContext context;
 	@Mock
@@ -114,6 +117,58 @@ public class MicrometerEventListenerTest {
 
 			listener(true).onEvent(toEvent(null, null, null, null));
 			assertEvent(realmName, "", "", "");
+		}
+
+		@DisplayName("replace(true) - context is null")
+		@Test
+		void replaceFieldsContextNull() {
+
+			var realmId = UUID.randomUUID().toString();
+			var realmName = UUID.randomUUID().toString();
+			var clientId = UUID.randomUUID().toString();
+			var type = EventType.LOGIN_ERROR;
+
+			when(session.realms()).thenReturn(realmProvider);
+			when(realmProvider.getRealm(realmId)).thenReturn(realmModel);
+			when(realmModel.getName()).thenReturn(realmName);
+
+			listener(true).onEvent(toEvent(realmId, clientId, type, null));
+			assertEvent(realmName, clientId, type.toString(), "");
+		}
+
+		@DisplayName("replace(true) - context is empty")
+		@Test
+		void replaceFieldsContextEmpty() {
+
+			var realmId = UUID.randomUUID().toString();
+			var realmName = UUID.randomUUID().toString();
+			var clientId = UUID.randomUUID().toString();
+			var type = EventType.LOGIN_ERROR;
+
+			when(session.getContext()).thenReturn(context);
+			when(session.realms()).thenReturn(realmProvider);
+			when(realmProvider.getRealm(realmId)).thenReturn(realmModel);
+			when(realmModel.getName()).thenReturn(realmName);
+
+			listener(true).onEvent(toEvent(realmId, clientId, type, null));
+			assertEvent(realmName, clientId, type.toString(), "");
+		}
+
+		@DisplayName("replace(true) - realmId is unknown")
+		@Test
+		void replaceFieldsRealmIdUnknown() {
+
+			var realmId = UUID.randomUUID().toString();
+			var clientId = UUID.randomUUID().toString();
+			var type = EventType.LOGIN_ERROR;
+
+			when(session.getContext()).thenReturn(context);
+			when(session.realms()).thenReturn(realmProvider);
+			when(context.getRealm()).thenReturn(realmModel);
+			when(realmModel.getId()).thenReturn(UUID.randomUUID().toString());
+
+			listener(true).onEvent(toEvent(realmId, clientId, type, null));
+			assertEvent(realmId, clientId, type.toString(), "");
 		}
 
 		@DisplayName("replace(false) - without error")
@@ -219,6 +274,58 @@ public class MicrometerEventListenerTest {
 
 			listener(true).onEvent(toAdminEvent(null, null, null, null), false);
 			assertAdminEvent(realmName, "", "", "");
+		}
+
+		@DisplayName("replace(true) - context is null")
+		@Test
+		void replaceFieldsContextNull() {
+
+			var realmId = UUID.randomUUID().toString();
+			var realmName = UUID.randomUUID().toString();
+			var resource = ResourceType.USER;
+			var operation = OperationType.CREATE;
+
+			when(session.realms()).thenReturn(realmProvider);
+			when(realmProvider.getRealm(realmId)).thenReturn(realmModel);
+			when(realmModel.getName()).thenReturn(realmName);
+
+			listener(true).onEvent(toAdminEvent(realmId, resource, operation, null), false);
+			assertAdminEvent(realmName, resource.toString(), operation.toString(), "");
+		}
+
+		@DisplayName("replace(true) - context is empty")
+		@Test
+		void replaceFieldsContextEmpty() {
+
+			var realmId = UUID.randomUUID().toString();
+			var realmName = UUID.randomUUID().toString();
+			var resource = ResourceType.USER;
+			var operation = OperationType.CREATE;
+
+			when(session.getContext()).thenReturn(context);
+			when(session.realms()).thenReturn(realmProvider);
+			when(realmProvider.getRealm(realmId)).thenReturn(realmModel);
+			when(realmModel.getName()).thenReturn(realmName);
+
+			listener(true).onEvent(toAdminEvent(realmId, resource, operation, null), false);
+			assertAdminEvent(realmName, resource.toString(), operation.toString(), "");
+		}
+
+		@DisplayName("replace(true) - realmId is unknown")
+		@Test
+		void replaceFieldsRealmIdUnknown() {
+
+			var realmId = UUID.randomUUID().toString();
+			var resource = ResourceType.USER;
+			var operation = OperationType.CREATE;
+
+			when(session.getContext()).thenReturn(context);
+			when(session.realms()).thenReturn(realmProvider);
+			when(context.getRealm()).thenReturn(realmModel);
+			when(realmModel.getId()).thenReturn(UUID.randomUUID().toString());
+
+			listener(true).onEvent(toAdminEvent(realmId, resource, operation, null), false);
+			assertAdminEvent(realmId, resource.toString(), operation.toString(), "");
 		}
 
 		@DisplayName("replace(false) - without error")
