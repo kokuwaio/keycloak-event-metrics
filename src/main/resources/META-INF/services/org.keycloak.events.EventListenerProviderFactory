@@ -1,1 +1,1 @@
-io.kokuwa.keycloak.metrics.MicrometerEventListenerFactory
+io.kokuwa.keycloak.metrics.MetricsEventListenerFactory

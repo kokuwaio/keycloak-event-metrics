@@ -17,23 +17,23 @@ import io.micrometer.core.instrument.MeterRegistry;
  *
  * @author Stephan Schnabel
  */
-public class MicrometerEventListener implements EventListenerProvider, AutoCloseable {
+public class MetricsEventListener implements EventListenerProvider, AutoCloseable {
 
-	private static final Logger log = Logger.getLogger(MicrometerEventListener.class);
+	private static final Logger log = Logger.getLogger(MetricsEventListener.class);
 	private final MeterRegistry registry;
+	private final boolean replaceIds;
 	private final KeycloakSession session;
-	private final boolean replace;
 
-	MicrometerEventListener(MeterRegistry registry, KeycloakSession session, boolean replaceId) {
+	MetricsEventListener(MeterRegistry registry, boolean replaceIds, KeycloakSession session) {
 		this.registry = registry;
+		this.replaceIds = replaceIds;
 		this.session = session;
-		this.replace = replaceId;
 	}
 
 	@Override
 	public void onEvent(Event event) {
 		registry.counter("keycloak_event_user",
-				"realm", toBlank(replace ? getRealmName(event.getRealmId()) : event.getRealmId()),
+				"realm", toBlank(replaceIds ? getRealmName(event.getRealmId()) : event.getRealmId()),
 				"type", toBlank(event.getType()),
 				"client", toBlank(event.getClientId()),
 				"error", toBlank(event.getError()))
@@ -43,7 +43,7 @@ public class MicrometerEventListener implements EventListenerProvider, AutoClose
 	@Override
 	public void onEvent(AdminEvent event, boolean includeRepresentation) {
 		registry.counter("keycloak_event_admin",
-				"realm", toBlank(replace ? getRealmName(event.getRealmId()) : event.getRealmId()),
+				"realm", toBlank(replaceIds ? getRealmName(event.getRealmId()) : event.getRealmId()),
 				"resource", toBlank(event.getResourceType()),
 				"operation", toBlank(event.getOperationType()),
 				"error", toBlank(event.getError()))

@@ -12,15 +12,15 @@ import org.keycloak.models.KeycloakSessionFactory;
 import io.micrometer.core.instrument.MeterRegistry;
 
 /**
- * Factory for {@link MicrometerEventListener}, uses {@link MeterRegistry} from CDI.
+ * Factory for {@link MetricsEventListener}, uses {@link MeterRegistry} from CDI.
  *
  * @author Stephan Schnabel
  */
-public class MicrometerEventListenerFactory implements EventListenerProviderFactory {
+public class MetricsEventListenerFactory implements EventListenerProviderFactory {
 
-	private static final Logger log = Logger.getLogger(MicrometerEventListener.class);
+	private static final Logger log = Logger.getLogger(MetricsEventListenerFactory.class);
 	private MeterRegistry registry;
-	private boolean replace;
+	private boolean replaceIds;
 
 	@Override
 	public String getId() {
@@ -29,8 +29,8 @@ public class MicrometerEventListenerFactory implements EventListenerProviderFact
 
 	@Override
 	public void init(Scope config) {
-		replace = "true".equals(System.getenv("KC_METRICS_EVENT_REPLACE_IDS"));
-		log.info(replace ? "Configured with model names." : "Configured with model ids.");
+		replaceIds = "true".equals(System.getenv().getOrDefault("KC_METRICS_EVENT_REPLACE_IDS", "true"));
+		log.info(replaceIds ? "Configured with model names." : "Configured with model ids.");
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class MicrometerEventListenerFactory implements EventListenerProviderFact
 
 	@Override
 	public EventListenerProvider create(KeycloakSession session) {
-		return new MicrometerEventListener(registry, session, replace);
+		return new MetricsEventListener(registry, replaceIds, session);
 	}
 
 	@Override
