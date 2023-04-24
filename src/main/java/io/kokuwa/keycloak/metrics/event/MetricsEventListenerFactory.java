@@ -1,7 +1,5 @@
 package io.kokuwa.keycloak.metrics.event;
 
-import javax.enterprise.inject.spi.CDI;
-
 import org.jboss.logging.Logger;
 import org.keycloak.Config.Scope;
 import org.keycloak.events.EventListenerProvider;
@@ -10,6 +8,7 @@ import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
 
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Metrics;
 
 /**
  * Factory for {@link MetricsEventListener}, uses {@link MeterRegistry} from CDI.
@@ -19,7 +18,6 @@ import io.micrometer.core.instrument.MeterRegistry;
 public class MetricsEventListenerFactory implements EventListenerProviderFactory {
 
 	private static final Logger log = Logger.getLogger(MetricsEventListenerFactory.class);
-	private MeterRegistry registry;
 	private boolean replaceIds;
 
 	@Override
@@ -34,13 +32,11 @@ public class MetricsEventListenerFactory implements EventListenerProviderFactory
 	}
 
 	@Override
-	public void postInit(KeycloakSessionFactory factory) {
-		registry = CDI.current().select(MeterRegistry.class).get();
-	}
+	public void postInit(KeycloakSessionFactory factory) {}
 
 	@Override
 	public EventListenerProvider create(KeycloakSession session) {
-		return new MetricsEventListener(registry, replaceIds, session);
+		return new MetricsEventListener(Metrics.globalRegistry, replaceIds, session);
 	}
 
 	@Override

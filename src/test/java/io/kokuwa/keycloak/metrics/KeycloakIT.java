@@ -28,16 +28,16 @@ public class KeycloakIT {
 	@Test
 	void loginAndAttempts(KeycloakClient keycloak, Prometheus prometheus) {
 
-		var clientId1 = UUID.randomUUID().toString();
-		var realmName1 = UUID.randomUUID().toString();
+		var realmName1 = "loginAndAttempts_1";
+		var clientId1 = realmName1 + "_client_1";
 		var username1 = UUID.randomUUID().toString();
 		var password1 = UUID.randomUUID().toString();
 		keycloak.createRealm(realmName1);
 		keycloak.createClient(realmName1, clientId1);
 		keycloak.createUser(realmName1, username1, password1);
 
-		var clientId2 = UUID.randomUUID().toString();
-		var realmName2 = UUID.randomUUID().toString();
+		var realmName2 = "loginAndAttempts_2";
+		var clientId2 = realmName2 + "_client_2";
 		var username2 = UUID.randomUUID().toString();
 		var password2 = UUID.randomUUID().toString();
 		keycloak.createRealm(realmName2);
