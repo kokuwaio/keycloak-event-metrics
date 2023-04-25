@@ -1,5 +1,7 @@
 package io.kokuwa.keycloak.metrics.junit;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -45,7 +47,8 @@ public class KeycloakClient {
 		client.setClientId(clientId);
 		client.setPublicClient(true);
 		client.setDirectAccessGrantsEnabled(true);
-		keycloak.realms().realm(realmName).clients().create(client);
+		var response = keycloak.realms().realm(realmName).clients().create(client);
+		assertEquals(201, response.getStatus());
 	}
 
 	public void createUser(String realmName, String username, String password) {
@@ -59,7 +62,15 @@ public class KeycloakClient {
 		user.setEmailVerified(true);
 		user.setUsername(username);
 		user.setCredentials(List.of(credential));
-		keycloak.realms().realm(realmName).users().create(user);
+		var response = keycloak.realms().realm(realmName).users().create(user);
+		assertEquals(201, response.getStatus());
+	}
+
+	public void deleteUser(String realmName, String username) {
+		keycloak.realms().realm(realmName).users()
+				.searchByUsername(username, true).stream()
+				.map(UserRepresentation::getId)
+				.forEach(keycloak.realms().realm(realmName).users()::delete);
 	}
 
 	public boolean login(String clientId, String realmName, String username, String password) {

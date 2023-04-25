@@ -1,6 +1,6 @@
-# Keycloak Event Metrics
+# Keycloak Metrics
 
-Provides metrics for Keycloak user/admin events. Tested on Keycloak [20-21](.github/workflows/ci.yaml#L74-L77).
+Provides metrics for Keycloak user/admin events and user/client/session count. Tested on Keycloak [20-21](.github/workflows/ci.yaml#L74-L77).
 
 [![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/kokuwaio/keycloak-event-metrics.svg?label=License)](http://www.apache.org/licenses/)
 [![Maven Central](https://img.shields.io/maven-central/v/io.kokuwa.keycloak/keycloak-event-metrics.svg?label=Maven%20Central)](https://central.sonatype.com/search?namespace=io.kokuwa.keycloak&q=keycloak-event-metrics)
@@ -14,7 +14,8 @@ Provides metrics for Keycloak user/admin events. Tested on Keycloak [20-21](.git
 * no realm specific Prometheus endpoint, only `/metrics` (from Quarkus)
 * no jvm/http metrics, this is [already](https://www.keycloak.org/server/configuration-metrics#_available_metrics) included in Keycloak
 * different metric names, can relace model ids with name (see [configuration](#kc_metrics_event_replace_ids))
-* deployed to maven central and very small (10 kb vs. 229 KB [aerogear/keycloak-metrics-spi](https://github.com/aerogear/keycloak-metrics-spi))
+* deployed to maven central and very small (15 kb vs. 151 KB [aerogear/keycloak-metrics-spi](https://github.com/aerogear/keycloak-metrics-spi))
+* gauge for active/offline sessions and user/client count
 
 ## What?
 
@@ -57,7 +58,7 @@ keycloak_event_admin_total{error="",operation="CREATE",realm="9039a0b5-e8c9-437a
 
 ### `KC_METRICS_EVENT_REPLACE_IDS`
 
-Per set to `true` (the default value) than replace model ids with names:
+Set to `true` (the default value) than replace model ids from events with names:
 
 * [RealmModel#getId()](https://github.com/keycloak/keycloak/blob/main/server-spi/src/main/java/org/keycloak/models/RealmModel.java#L82) with [RealmModel#getName()](https://github.com/keycloak/keycloak/blob/main/server-spi/src/main/java/org/keycloak/models/RealmModel.java#L84)
 
@@ -68,6 +69,45 @@ keycloak_event_user_total{client="test-client",error="",realm="test-realm",type=
 keycloak_event_user_total{client="other-client",error="",realm="other-realm",type="LOGIN",} 1.0
 keycloak_event_user_total{client="other-client",error="invalid_user_credentials",realm="other-realm",type="LOGIN_ERROR",} 1.0
 ```
+
+### `KC_METRICS_STATS_ENABLED`
+
+Set to `true` (default is `false`) to provide metrics for user/client count per realm and session count per client. Metrics:
+
+```txt
+# HELP keycloak_users  
+# TYPE keycloak_users gauge
+keycloak_users{realm="master",} 1.0
+keycloak_users{realm="my-realm",} 2.0
+keycloak_users{realm="other-realm",} 1.0# HELP keycloak_active_user_sessions
+# TYPE keycloak_active_user_sessions gauge
+keycloak_active_user_sessions{client="admin-cli",realm="userCount_1",} 0.0
+keycloak_active_user_sessions{client="admin-cli",realm="userCount_2",} 0.0
+keycloak_active_user_sessions{client="admin-cli",realm="master",} 1.0
+# TYPE keycloak_active_client_sessions gauge
+keycloak_active_client_sessions{client="admin-cli",realm="userCount_1",} 0.0
+keycloak_active_client_sessions{client="admin-cli",realm="userCount_2",} 0.0
+keycloak_active_client_sessions{client="admin-cli",realm="master",} 0.0
+# TYPE keycloak_offline_sessions gauge
+keycloak_offline_sessions{client="admin-cli",realm="userCount_1",} 0.0
+keycloak_offline_sessions{client="admin-cli",realm="userCount_2",} 0.0
+keycloak_offline_sessions{client="admin-cli",realm="master",} 0.0
+```
+
+### `KC_METRICS_STATS_INTERVAL`
+
+If `KC_METRICS_STATS_ENABLED` is `true` this will define the interval for scraping. If not configured `PT60s` will be used.
+
+### `KC_METRICS_STATS_INFO_THRESHOLD` and `KC_METRICS_STATS_WARN_THRESHOLD`
+
+If `KC_METRICS_STATS_ENABLED` is `true` this envs will define logging if scraping takes to long. Both envs are parsed as `java.lang.Duration`.
+
+Default values:
+
+* `KC_METRICS_STATS_INFO_THRESHOLD`: 50% of `KC_METRICS_STATS_INTERVAL` = 30s
+* `KC_METRICS_STATS_WARN_THRESHOLD`: 75% of `KC_METRICS_STATS_INTERVAL` = 45s
+
+If scrapping takes less than `KC_METRICS_STATS_INFO_THRESHOLD` duration will be logged on debug level.
 
 ## Installation
 
