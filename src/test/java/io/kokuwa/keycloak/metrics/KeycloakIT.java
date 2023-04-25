@@ -1,11 +1,14 @@
 package io.kokuwa.keycloak.metrics;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.Instant;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -72,5 +75,42 @@ public class KeycloakIT {
 				() -> assertEquals(loginErrorBefore + 1, loginErrorAfter, "login failure total"),
 				() -> assertEquals(loginErrorBefore1 + 0, loginErrorAfter1, "login failure #1"),
 				() -> assertEquals(loginErrorBefore2 + 1, loginErrorAfter2, "login failure #2"));
+	}
+
+	@DisplayName("user count")
+	@Test
+	void userCount(KeycloakClient keycloak, Prometheus prometheus) {
+
+		var realmName1 = "userCount_1";
+		var realmName2 = "userCount_2";
+		var username = UUID.randomUUID().toString();
+
+		keycloak.createRealm(realmName1);
+		keycloak.createRealm(realmName2);
+
+		await(() -> prometheus.userCount(realmName1) == 0, prometheus, "realm 1 not found");
+		await(() -> prometheus.userCount(realmName2) == 0, prometheus, "realm 2 not found");
+
+		keycloak.createUser(realmName1, username, UUID.randomUUID().toString());
+		keycloak.createUser(realmName1, UUID.randomUUID().toString(), UUID.randomUUID().toString());
+		keycloak.createUser(realmName1, UUID.randomUUID().toString(), UUID.randomUUID().toString());
+		keycloak.createUser(realmName2, UUID.randomUUID().toString(), UUID.randomUUID().toString());
+
+		await(() -> prometheus.userCount(realmName1) == 3, prometheus, "realm 1 shoud have 3 users");
+		await(() -> prometheus.userCount(realmName2) == 1, prometheus, "realm 2 shoud have 1 users");
+
+		keycloak.deleteUser(realmName1, username);
+
+		await(() -> prometheus.userCount(realmName1) == 2, prometheus, "realm 1 shoud have 2 users after deletion");
+		await(() -> prometheus.userCount(realmName2) == 1, prometheus, "realm 2 shoud have 1 users");
+	}
+
+	void await(Supplier<Boolean> check, Prometheus prometheus, String message) {
+		var end = Instant.now().plusSeconds(10);
+		while (Instant.now().isBefore(end) && !check.get()) {
+			assertDoesNotThrow(() -> Thread.sleep(1000));
+			prometheus.scrap();
+		}
+		assertTrue(check.get(), message);
 	}
 }

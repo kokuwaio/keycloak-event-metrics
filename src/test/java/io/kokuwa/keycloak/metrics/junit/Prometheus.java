@@ -41,6 +41,14 @@ public class Prometheus {
 				.sum();
 	}
 
+	public int userCount(String realm) {
+		return state.stream()
+				.filter(metric -> Objects.equals(metric.name(), "keycloak_users"))
+				.filter(metric -> Objects.equals(metric.tags().get("realm"), realm))
+				.mapToInt(metric -> metric.value().intValue())
+				.sum();
+	}
+
 	public void scrap() {
 		state.clear();
 		Stream.of(client.scrap().split("[\\r\\n]+"))
