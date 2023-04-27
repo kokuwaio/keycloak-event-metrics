@@ -30,21 +30,21 @@ public class MetricsStatsFactoryImpl implements MetricsStatsFactory {
 	@Override
 	public void postInit(KeycloakSessionFactory factory) {
 
-		if (!"true".equals(System.getenv().get("KC_METRICS_STATS_ENABLED"))) {
+		if (!"true".equals(getenv("KC_METRICS_STATS_ENABLED"))) {
 			log.infov("Keycloak stats not enabled.");
 			return;
 		}
 
 		var intervalDuration = Optional
-				.ofNullable(System.getenv("KC_METRICS_STATS_INTERVAL"))
+				.ofNullable(getenv("KC_METRICS_STATS_INTERVAL"))
 				.map(Duration::parse)
 				.orElse(Duration.ofSeconds(60));
 		var infoThreshold = Optional
-				.ofNullable(System.getenv("KC_METRICS_STATS_INFO_THRESHOLD"))
+				.ofNullable(getenv("KC_METRICS_STATS_INFO_THRESHOLD"))
 				.map(Duration::parse)
 				.orElse(Duration.ofMillis(Double.valueOf(intervalDuration.toMillis() * 0.5).longValue()));
 		var warnThreshold = Optional
-				.ofNullable(System.getenv("KC_METRICS_STATS_WARN_THRESHOLD"))
+				.ofNullable(getenv("KC_METRICS_STATS_WARN_THRESHOLD"))
 				.map(Duration::parse)
 				.orElse(Duration.ofMillis(Double.valueOf(intervalDuration.toMillis() * 0.75).longValue()));
 		log.infov("Keycloak stats enabled with interval of {0} and info/warn after {1}/{2}.",
@@ -64,4 +64,8 @@ public class MetricsStatsFactoryImpl implements MetricsStatsFactory {
 
 	@Override
 	public void close() {}
+
+	String getenv(String key) {
+		return System.getenv().get(key);
+	}
 }

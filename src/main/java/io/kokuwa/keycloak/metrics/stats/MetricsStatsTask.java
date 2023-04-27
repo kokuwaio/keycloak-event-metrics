@@ -43,7 +43,7 @@ public class MetricsStatsTask implements Provider, ScheduledTask {
 			scrape(session);
 		} catch (Exception e) {
 			if (e instanceof org.hibernate.exception.SQLGrammarException) {
-				log.infov("Metrics status task skipped, database not ready");
+				log.infov("Metrics status task skipped, database not ready.");
 			} else {
 				log.errorv(e, "Failed to scrape stats.");
 			}
@@ -52,13 +52,13 @@ public class MetricsStatsTask implements Provider, ScheduledTask {
 
 		var duration = Duration.between(start, Instant.now());
 		if (duration.compareTo(interval) > 0) {
-			log.errorv("Finished scrapping keycloak stats in {0}, consider to increase interval", duration);
+			log.errorv("Finished scrapping keycloak stats in {0}, consider to increase interval.", duration);
 		} else if (duration.compareTo(warnThreshold) > 0) {
-			log.warnv("Finished scrapping keycloak stats in {0}, consider to increase interval", duration);
+			log.warnv("Finished scrapping keycloak stats in {0}, consider to increase interval.", duration);
 		} else if (duration.compareTo(infoThreshold) > 0) {
-			log.infov("Finished scrapping keycloak stats in {0}", duration);
+			log.infov("Finished scrapping keycloak stats in {0}.", duration);
 		} else {
-			log.debugv("Finished scrapping keycloak stats in {0}", duration);
+			log.debugv("Finished scrapping keycloak stats in {0}.", duration);
 		}
 	}
 
