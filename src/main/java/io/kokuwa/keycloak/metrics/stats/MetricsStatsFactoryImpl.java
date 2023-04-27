@@ -10,8 +10,6 @@ import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.models.utils.KeycloakModelUtils;
 import org.keycloak.timer.TimerProvider;
 
-import io.micrometer.core.instrument.Metrics;
-
 /**
  * Implementation of {@link MetricsStatsFactory}.
  *
@@ -53,10 +51,10 @@ public class MetricsStatsFactoryImpl implements MetricsStatsFactory {
 				intervalDuration, infoThreshold, warnThreshold);
 
 		var interval = intervalDuration.toMillis();
-		var task = new MetricsStatsTask(Metrics.globalRegistry, intervalDuration, infoThreshold, warnThreshold);
+		var task = new MetricsStatsTask(intervalDuration, infoThreshold, warnThreshold);
 		KeycloakModelUtils.runJobInTransaction(factory, session -> session
 				.getProvider(TimerProvider.class)
-				.schedule(() -> KeycloakModelUtils.runJobInTransaction(factory, task), interval, "metrics"));
+				.scheduleTask(task, interval, "metrics"));
 	}
 
 	@Override

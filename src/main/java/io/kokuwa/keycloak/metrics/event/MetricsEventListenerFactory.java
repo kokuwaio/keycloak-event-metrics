@@ -7,11 +7,8 @@ import org.keycloak.events.EventListenerProviderFactory;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
 
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Metrics;
-
 /**
- * Factory for {@link MetricsEventListener}, uses {@link MeterRegistry} from CDI.
+ * Factory for {@link MetricsEventListener}.
  *
  * @author Stephan Schnabel
  */
@@ -36,7 +33,7 @@ public class MetricsEventListenerFactory implements EventListenerProviderFactory
 
 	@Override
 	public EventListenerProvider create(KeycloakSession session) {
-		return new MetricsEventListener(Metrics.globalRegistry, replaceIds, session);
+		return new MetricsEventListener(replaceIds, session);
 	}
 
 	@Override

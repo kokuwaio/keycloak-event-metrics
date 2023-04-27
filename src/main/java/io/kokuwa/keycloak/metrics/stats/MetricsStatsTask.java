@@ -9,10 +9,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.jboss.logging.Logger;
 import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.KeycloakSessionTask;
 import org.keycloak.provider.Provider;
+import org.keycloak.timer.ScheduledTask;
 
-import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tag;
 
 /**
@@ -20,17 +20,15 @@ import io.micrometer.core.instrument.Tag;
  *
  * @author Stephan Schnabel
  */
-public class MetricsStatsTask implements Provider, KeycloakSessionTask {
+public class MetricsStatsTask implements Provider, ScheduledTask {
 
 	private static final Logger log = Logger.getLogger(MetricsStatsTask.class);
-	private final Map<String, AtomicLong> values = new HashMap<>();
-	private final MeterRegistry registry;
+	private static final Map<String, AtomicLong> values = new HashMap<>();
 	private final Duration interval;
 	private final Duration infoThreshold;
 	private final Duration warnThreshold;
 
-	MetricsStatsTask(MeterRegistry registry, Duration interval, Duration infoThreshold, Duration warnThreshold) {
-		this.registry = registry;
+	MetricsStatsTask(Duration interval, Duration infoThreshold, Duration warnThreshold) {
 		this.interval = interval;
 		this.infoThreshold = infoThreshold;
 		this.warnThreshold = warnThreshold;
@@ -84,6 +82,6 @@ public class MetricsStatsTask implements Provider, KeycloakSessionTask {
 	}
 
 	private void gauge(String name, Set<Tag> tags, long value) {
-		values.computeIfAbsent(name + tags, s -> registry.gauge(name, tags, new AtomicLong())).set(value);
+		values.computeIfAbsent(name + tags, s -> Metrics.gauge(name, tags, new AtomicLong())).set(value);
 	}
 }

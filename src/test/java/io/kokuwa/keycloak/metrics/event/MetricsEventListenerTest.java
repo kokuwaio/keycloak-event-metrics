@@ -1,22 +1,13 @@
 package io.kokuwa.keycloak.metrics.event;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventType;
 import org.keycloak.events.admin.AdminEvent;
@@ -26,21 +17,18 @@ import org.keycloak.models.KeycloakContext;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RealmProvider;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.MeterRegistry;
+import io.kokuwa.keycloak.metrics.junit.AbstractMockitoTest;
+import io.micrometer.core.instrument.Metrics;
 
 /**
  * Test for {@link MetricsEventListener} with Mockito.
  *
  * @author Stephan Schnabel
  */
-@ExtendWith(MockitoExtension.class)
-public class MetricsEventListenerTest {
+@DisplayName("events: listener")
+public class MetricsEventListenerTest extends AbstractMockitoTest {
 
 	@Mock
 	KeycloakSession session;
@@ -50,19 +38,6 @@ public class MetricsEventListenerTest {
 	RealmProvider realmProvider;
 	@Mock
 	KeycloakContext context;
-	@Mock
-	MeterRegistry registry;
-	@Mock
-	Counter counter;
-	@Captor
-	ArgumentCaptor<String> metricCaptor;
-	@Captor
-	ArgumentCaptor<String[]> tagsCaptor;
-
-	@BeforeEach
-	void setup() {
-		when(registry.counter(metricCaptor.capture(), tagsCaptor.capture())).thenReturn(counter);
-	}
 
 	@DisplayName("onEvent(true)")
 	@Nested
@@ -213,11 +188,11 @@ public class MetricsEventListenerTest {
 		}
 
 		private void assertEvent(String realm, String client, String type, String error) {
-			assertCounter("keycloak_event_user", Map.of(
+			assertCounter("keycloak_event_user",
 					"realm", realm,
 					"client", client,
 					"type", type,
-					"error", error));
+					"error", error);
 		}
 	}
 
@@ -370,29 +345,25 @@ public class MetricsEventListenerTest {
 		}
 
 		private void assertAdminEvent(String realm, String resource, String operation, String error) {
-			assertCounter("keycloak_event_admin", Map.of(
+			assertCounter("keycloak_event_admin",
 					"realm", realm,
 					"resource", resource,
 					"operation", operation,
-					"error", error));
+					"error", error);
 		}
 	}
 
 	private MetricsEventListener listener(boolean replace) {
-		return new MetricsEventListener(registry, replace, session);
+		return new MetricsEventListener(replace, session);
 	}
 
-	private void assertCounter(String metric, Map<String, String> tags) {
-		verify(registry).counter(anyString(), any(String[].class));
-		verify(counter).increment();
-		assertEquals(metric, metricCaptor.getValue(), "metric");
-		var expectedTags = new TreeMap<>(tags);
-		var actualTags = IntStream
-				.range(0, tagsCaptor.getValue().length / 2).mapToObj(i -> i * 2)
-				.collect(Collectors.toMap(
-						i -> tagsCaptor.getValue()[i],
-						i -> tagsCaptor.getValue()[i + 1],
-						(i, j) -> i, TreeMap::new));
-		assertEquals(expectedTags, actualTags, "tags");
+	private static void assertCounter(String metric, String... tags) {
+		var counter = Metrics.globalRegistry.counter(metric, tags);
+		assertEquals(1D, counter.count(), "micrometer.counter.count");
+		assertEquals(0, Metrics.globalRegistry
+				.getMeters().stream()
+				.filter(meter -> meter != counter)
+				.count(),
+				"other meter found");
 	}
 }
