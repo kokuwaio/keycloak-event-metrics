@@ -78,7 +78,7 @@
 
 		<!-- plugins -->
 
-		<version.org.apache.maven.plugins.checkstyle>3.2.1</version.org.apache.maven.plugins.checkstyle>
+		<version.org.apache.maven.plugins.checkstyle>3.2.2</version.org.apache.maven.plugins.checkstyle>
 		<version.org.apache.maven.plugins.clean>3.2.0</version.org.apache.maven.plugins.clean>
 		<version.org.apache.maven.plugins.compiler>3.11.0</version.org.apache.maven.plugins.compiler>
 		<version.org.apache.maven.plugins.dependency>3.5.0</version.org.apache.maven.plugins.dependency>
@@ -93,13 +93,13 @@
 		<version.org.apache.maven.plugins.surefire>3.0.0</version.org.apache.maven.plugins.surefire>
 		<version.org.codehaus.mojo.tidy>1.2.0</version.org.codehaus.mojo.tidy>
 		<version.org.sonatype.plugins.nexus-staging>1.6.13</version.org.sonatype.plugins.nexus-staging>
-		<version.com.puppycrawl.tools.checkstyle>10.9.3</version.com.puppycrawl.tools.checkstyle>
+		<version.com.puppycrawl.tools.checkstyle>10.10.0</version.com.puppycrawl.tools.checkstyle>
 		<version.io.kokuwa.checkstyle>0.5.6</version.io.kokuwa.checkstyle>
 
 		<!-- dependencies -->
 
 		<version.org.keycloak>21.1.1</version.org.keycloak>
-		<version.org.mockito>5.2.0</version.org.mockito>
+		<version.org.mockito>5.3.1</version.org.mockito>
 		<version.org.testcontainers>1.18.0</version.org.testcontainers>
 
 	</properties>
