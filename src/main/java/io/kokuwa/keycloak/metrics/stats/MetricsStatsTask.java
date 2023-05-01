@@ -68,20 +68,24 @@ public class MetricsStatsTask implements Provider, ScheduledTask {
 	private void scrape(KeycloakSession session) {
 		session.realms().getRealmsStream().forEach(realm -> {
 			var tagRealm = Tag.of("realm", realm.getName());
-			gauge("keycloak_users", Set.of(tagRealm), session.users().getUsersCount(realm));
-			gauge("keycloak_clients", Set.of(tagRealm), session.clients().getClientsCount(realm));
+			gauge("keycloak_users", Set.of(tagRealm), session.users().getUsersCount(realm), true);
+			gauge("keycloak_clients", Set.of(tagRealm), session.clients().getClientsCount(realm), true);
 			var sessions = session.sessions();
 			var activeSessions = sessions.getActiveClientSessionStats(realm, false);
 			realm.getClientsStream().forEach(client -> {
 				var tags = Set.of(tagRealm, Tag.of("client", client.getClientId()));
-				gauge("keycloak_offline_sessions", tags, sessions.getOfflineSessionsCount(realm, client));
-				gauge("keycloak_active_user_sessions", tags, sessions.getActiveUserSessions(realm, client));
-				gauge("keycloak_active_client_sessions", tags, activeSessions.getOrDefault(client.getId(), 0L));
+				gauge("keycloak_offline_sessions", tags, sessions.getOfflineSessionsCount(realm, client), false);
+				gauge("keycloak_active_user_sessions", tags, sessions.getActiveUserSessions(realm, client), false);
+				gauge("keycloak_active_client_sessions", tags, activeSessions.getOrDefault(client.getId(), 0L), false);
 			});
 		});
 	}
 
-	private void gauge(String name, Set<Tag> tags, long value) {
-		values.computeIfAbsent(name + tags, s -> Metrics.gauge(name, tags, new AtomicLong())).set(value);
+	private void gauge(String name, Set<Tag> tags, long value, boolean force) {
+		var key = name + tags;
+		if (!force && value == 0 && !values.containsKey(key)) {
+			return;
+		}
+		values.computeIfAbsent(key, s -> Metrics.gauge(name, tags, new AtomicLong())).set(value);
 	}
 }
