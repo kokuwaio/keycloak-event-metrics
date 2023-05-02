@@ -135,12 +135,12 @@ public class MetricsStatsTaskTest extends AbstractMockitoTest {
 		task().run(session);
 		assertUsersCount(realmModel, 0);
 		assertClientsCount(realmModel, 0);
-		assertOfflineSessions(realmModel, client1Model, 0);
-		assertOfflineSessions(realmModel, client2Model, 0);
-		assertActiveUserSessions(realmModel, client1Model, 0);
-		assertActiveUserSessions(realmModel, client2Model, 0);
-		assertActiveClientSessions(realmModel, client1Model, 0);
-		assertActiveClientSessions(realmModel, client2Model, 0);
+		assertOfflineSessions(realmModel, client1Model, null);
+		assertOfflineSessions(realmModel, client2Model, null);
+		assertActiveUserSessions(realmModel, client1Model, null);
+		assertActiveUserSessions(realmModel, client2Model, null);
+		assertActiveClientSessions(realmModel, client1Model, null);
+		assertActiveClientSessions(realmModel, client2Model, null);
 
 		// initial values
 
@@ -155,12 +155,12 @@ public class MetricsStatsTaskTest extends AbstractMockitoTest {
 		task().run(session);
 		assertUsersCount(realmModel, 10);
 		assertClientsCount(realmModel, 20);
-		assertOfflineSessions(realmModel, client1Model, 0);
+		assertOfflineSessions(realmModel, client1Model, null);
 		assertOfflineSessions(realmModel, client2Model, 1);
 		assertActiveUserSessions(realmModel, client1Model, 2);
 		assertActiveUserSessions(realmModel, client2Model, 3);
 		assertActiveClientSessions(realmModel, client1Model, 5);
-		assertActiveClientSessions(realmModel, client2Model, 0);
+		assertActiveClientSessions(realmModel, client2Model, null);
 
 		// updated values
 
@@ -199,19 +199,19 @@ public class MetricsStatsTaskTest extends AbstractMockitoTest {
 		assertGauge("keycloak_clients", realm, null, count);
 	}
 
-	private static void assertActiveClientSessions(RealmModel realm, ClientModel client, int count) {
+	private static void assertActiveClientSessions(RealmModel realm, ClientModel client, Integer count) {
 		assertGauge("keycloak_active_client_sessions", realm, client, count);
 	}
 
-	private static void assertActiveUserSessions(RealmModel realm, ClientModel client, int count) {
+	private static void assertActiveUserSessions(RealmModel realm, ClientModel client, Integer count) {
 		assertGauge("keycloak_active_user_sessions", realm, client, count);
 	}
 
-	private static void assertOfflineSessions(RealmModel realm, ClientModel client, int count) {
+	private static void assertOfflineSessions(RealmModel realm, ClientModel client, Integer count) {
 		assertGauge("keycloak_offline_sessions", realm, client, count);
 	}
 
-	private static void assertGauge(String name, RealmModel realm, ClientModel client, int count) {
+	private static void assertGauge(String name, RealmModel realm, ClientModel client, Integer count) {
 		var gauges = Metrics.globalRegistry.getMeters().stream()
 				.filter(Gauge.class::isInstance)
 				.filter(gauge -> gauge.getId().getName().equals(name))
@@ -219,7 +219,11 @@ public class MetricsStatsTaskTest extends AbstractMockitoTest {
 				.filter(gauge -> client == null || gauge.getId().getTag("client").equals(client.getClientId()))
 				.map(Gauge.class::cast)
 				.toList();
-		assertEquals(1, gauges.size());
-		assertEquals(count, gauges.get(0).value());
+		if (count == null) {
+			assertEquals(0, gauges.size());
+		} else {
+			assertEquals(1, gauges.size());
+			assertEquals(count.doubleValue(), gauges.get(0).value());
+		}
 	}
 }
