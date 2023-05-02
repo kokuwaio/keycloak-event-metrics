@@ -159,7 +159,7 @@
 					<groupId>com.openshift</groupId>
 					<artifactId>openshift-restclient-java</artifactId>
 				</exclusion>
-				<exclusion>
+				<exclusion><!-- https://github.com/keycloak/keycloak/issues/19850 -->
 					<groupId>org.keycloak</groupId>
 					<artifactId>keycloak-admin-ui</artifactId>
 				</exclusion>

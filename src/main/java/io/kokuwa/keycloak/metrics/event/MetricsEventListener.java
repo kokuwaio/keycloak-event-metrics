@@ -10,7 +10,7 @@ import org.keycloak.models.KeycloakContext;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 
-import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Metrics;
 
 /**
  * Listener for {@link Event} and {@link AdminEvent}.
@@ -20,19 +20,17 @@ import io.micrometer.core.instrument.MeterRegistry;
 public class MetricsEventListener implements EventListenerProvider, AutoCloseable {
 
 	private static final Logger log = Logger.getLogger(MetricsEventListener.class);
-	private final MeterRegistry registry;
 	private final boolean replaceIds;
 	private final KeycloakSession session;
 
-	MetricsEventListener(MeterRegistry registry, boolean replaceIds, KeycloakSession session) {
-		this.registry = registry;
+	MetricsEventListener(boolean replaceIds, KeycloakSession session) {
 		this.replaceIds = replaceIds;
 		this.session = session;
 	}
 
 	@Override
 	public void onEvent(Event event) {
-		registry.counter("keycloak_event_user",
+		Metrics.counter("keycloak_event_user",
 				"realm", toBlank(replaceIds ? getRealmName(event.getRealmId()) : event.getRealmId()),
 				"type", toBlank(event.getType()),
 				"client", toBlank(event.getClientId()),
@@ -42,7 +40,7 @@ public class MetricsEventListener implements EventListenerProvider, AutoCloseabl
 
 	@Override
 	public void onEvent(AdminEvent event, boolean includeRepresentation) {
-		registry.counter("keycloak_event_admin",
+		Metrics.counter("keycloak_event_admin",
 				"realm", toBlank(replaceIds ? getRealmName(event.getRealmId()) : event.getRealmId()),
 				"resource", toBlank(event.getResourceType()),
 				"operation", toBlank(event.getOperationType()),
