@@ -1,10 +1,10 @@
 # Keycloak Metrics
 
-Provides metrics for Keycloak user/admin events and user/client/session count. Tested on Keycloak [20-21](.github/workflows/ci.yaml#L74-L77).
+Provides metrics for Keycloak user/admin events and user/client/session count. Tested on Keycloak [21](.github/workflows/pr.yaml#L49-L51).
 
 [![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/kokuwaio/keycloak-event-metrics.svg?label=License)](http://www.apache.org/licenses/)
 [![Maven Central](https://img.shields.io/maven-central/v/io.kokuwa.keycloak/keycloak-event-metrics.svg?label=Maven%20Central)](https://central.sonatype.com/search?namespace=io.kokuwa.keycloak&q=keycloak-event-metrics)
-[![CI](https://img.shields.io/github/actions/workflow/status/kokuwaio/keycloak-event-metrics/ci.yaml?branch=main&label=CI)](https://github.com/kokuwaio/keycloak-event-metrics/actions/workflows/ci.yaml?query=branch%3Amain)
+[![Build](https://img.shields.io/github/actions/workflow/status/kokuwaio/keycloak-event-metrics/build.yaml?label=Build)](https://github.com/kokuwaio/keycloak-event-metrics/actions/workflows/build.yaml)
 
 ## Why?
 
