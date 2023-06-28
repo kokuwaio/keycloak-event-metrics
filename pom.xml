@@ -69,7 +69,7 @@
 		<!-- ============================== Libaries ============================= -->
 		<!-- ===================================================================== -->
 
-		<version.org.keycloak>21.1.1</version.org.keycloak>
+		<version.org.keycloak>21.1.2</version.org.keycloak>
 		<version.org.testcontainers>1.18.3</version.org.testcontainers>
 
 	</properties>
