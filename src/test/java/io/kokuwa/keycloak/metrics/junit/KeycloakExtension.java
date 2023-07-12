@@ -7,8 +7,6 @@ import java.time.Duration;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.ws.rs.client.ClientBuilder;
-
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -18,6 +16,8 @@ import org.keycloak.admin.client.token.TokenService;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.MountableFile;
+
+import jakarta.ws.rs.client.ClientBuilder;
 
 /**
  * JUnit extension to start keycloak.
