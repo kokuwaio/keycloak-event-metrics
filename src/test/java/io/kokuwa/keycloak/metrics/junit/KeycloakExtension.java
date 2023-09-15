@@ -80,7 +80,7 @@ public class KeycloakExtension implements BeforeAllCallback, ParameterResolver {
 		var target = ClientBuilder.newClient().target(url);
 		var token = Keycloak.getClientProvider().targetProxy(target, TokenService.class);
 		prometheus = new Prometheus(Keycloak.getClientProvider().targetProxy(target, PrometheusClient.class));
-		client = new KeycloakClient(keycloak, token);
+		client = new KeycloakClient(url, keycloak, token);
 	}
 
 	@Override

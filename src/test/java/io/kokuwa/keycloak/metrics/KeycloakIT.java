@@ -3,7 +3,7 @@ package io.kokuwa.keycloak.metrics;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
@@ -18,6 +18,7 @@ import org.keycloak.events.EventType;
 import io.kokuwa.keycloak.metrics.junit.KeycloakClient;
 import io.kokuwa.keycloak.metrics.junit.KeycloakExtension;
 import io.kokuwa.keycloak.metrics.junit.Prometheus;
+import jakarta.ws.rs.NotAuthorizedException;
 
 /**
  * Integration tests with Keycloak.
@@ -55,10 +56,10 @@ public class KeycloakIT {
 		var loginErrorBefore1 = prometheus.userEvent(EventType.LOGIN_ERROR, realmName1, clientId1);
 		var loginErrorBefore2 = prometheus.userEvent(EventType.LOGIN_ERROR, realmName2, clientId2);
 
-		assertTrue(keycloak.login(clientId1, realmName1, username1, password1));
-		assertTrue(keycloak.login(clientId1, realmName1, username1, password1));
-		assertTrue(keycloak.login(clientId2, realmName2, username2, password2));
-		assertFalse(keycloak.login(clientId2, realmName2, username2, "nope"));
+		assertDoesNotThrow(() -> keycloak.login(clientId1, realmName1, username1, password1));
+		assertDoesNotThrow(() -> keycloak.login(clientId1, realmName1, username1, password1));
+		assertDoesNotThrow(() -> keycloak.login(clientId2, realmName2, username2, password2));
+		assertThrows(NotAuthorizedException.class, () -> keycloak.login(clientId2, realmName2, username2, "nope"));
 
 		prometheus.scrap();
 		var loginAfter = prometheus.userEvent(EventType.LOGIN);
