@@ -69,7 +69,7 @@
 		<!-- ============================== Libaries ============================= -->
 		<!-- ===================================================================== -->
 
-		<version.org.keycloak>22.0.4</version.org.keycloak>
+		<version.org.keycloak>22.0.5</version.org.keycloak>
 		<version.org.keycloak.test>${version.org.keycloak}</version.org.keycloak.test>
 		<version.org.testcontainers>1.18.3</version.org.testcontainers>
 
