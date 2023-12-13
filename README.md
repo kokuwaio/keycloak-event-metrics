@@ -111,6 +111,10 @@ If scrapping takes less than `KC_METRICS_STATS_INFO_THRESHOLD` duration will be 
 
 ## Installation
 
+### Grafana Dashboard
+
+Can be found here: [kokuwaio/keycloak keycloak-metrics.json](https://github.com/kokuwaio/keycloak/blob/main/src/test/k3s/dev/grafana/files/dashboards/keycloak-metrics.json)
+
 ### Testcontainers
 
 For usage in [Testcontainers](https://www.testcontainers.org/) see [KeycloakExtension.java](src/test/java/io/kokuwa/keycloak/metrics/junit/KeycloakExtension.java#L57-L68)
