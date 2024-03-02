@@ -126,7 +126,31 @@ Check: [kokuwaio/keycloak](https://github.com/kokuwaio/keycloak)
 Dockerfile:
 
 ```Dockerfile
-FROM quay.io/keycloak/keycloak:21.0.1
+###
+### download keycloak event metrics
+###
+
+FROM debian:stable-slim AS metrics
+
+RUN apt-get -qq update
+RUN apt-get -qq install --yes --no-install-recommends ca-certificates wget
+
+ARG METRICS_VERSION=1.0.0
+ARG METRICS_FILE=keycloak-event-metrics-${METRICS_VERSION}.jar
+ARG METRICS_URL=https://repo1.maven.org/maven2/io/kokuwa/keycloak/keycloak-event-metrics/${METRICS_VERSION}
+
+RUN wget --quiet --no-hsts ${METRICS_URL}/${METRICS_FILE}
+RUN wget --quiet --no-hsts ${METRICS_URL}/${METRICS_FILE}.sha1
+RUN wget --quiet --no-hsts ${METRICS_URL}/${METRICS_FILE}.asc
+RUN echo "$(cat ${METRICS_FILE}.sha1) ${METRICS_FILE}" sha1sum --quiet --check --strict -
+RUN mkdir -p /opt/keycloak/providers
+RUN mv ${METRICS_FILE} /opt/keycloak/providers
+
+###
+### build keycloak with metrics
+###
+
+FROM quay.io/keycloak/keycloak:23.0.7
 
 ENV KEYCLOAK_ADMIN=admin
 ENV KEYCLOAK_ADMIN_PASSWORD=password
@@ -134,7 +158,7 @@ ENV KC_HEALTH_ENABLED=true
 ENV KC_METRICS_ENABLED=true
 ENV KC_LOG_CONSOLE_COLOR=true
 
-ADD target/keycloak-event-metrics-0.0.1-SNAPSHOT.jar /opt/keycloak/providers
+COPY --from=metrics /opt/keycloak/providers /opt/keycloak/providers
 RUN /opt/keycloak/bin/kc.sh build
 ```
 
