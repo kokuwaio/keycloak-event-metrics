@@ -80,6 +80,8 @@ public class KeycloakClient {
 							"emailVerified", true,
 							"email", username + "@example.org",
 							"username", username,
+							"firstName", username,
+							"lastName", username,
 							"credentials", List.of(Map.of(
 									"type", CredentialRepresentation.PASSWORD,
 									"value", password,
