@@ -51,6 +51,7 @@ jobs:
           - 21.1.2
           - 22.0.5
           - 23.0.7
+          - 24.0.0
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
