@@ -141,7 +141,6 @@ ARG METRICS_URL=https://repo1.maven.org/maven2/io/kokuwa/keycloak/keycloak-event
 
 RUN wget --quiet --no-hsts ${METRICS_URL}/${METRICS_FILE}
 RUN wget --quiet --no-hsts ${METRICS_URL}/${METRICS_FILE}.sha1
-RUN wget --quiet --no-hsts ${METRICS_URL}/${METRICS_FILE}.asc
 RUN echo "$(cat ${METRICS_FILE}.sha1) ${METRICS_FILE}" sha1sum --quiet --check --strict -
 RUN mkdir -p /opt/keycloak/providers
 RUN mv ${METRICS_FILE} /opt/keycloak/providers
