@@ -200,7 +200,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- flatten fails because of groupId ${ee.maven.groupId} - skip -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
