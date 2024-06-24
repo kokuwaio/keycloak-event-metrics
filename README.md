@@ -119,6 +119,15 @@ Can be found here: [kokuwaio/keycloak keycloak-metrics.json](https://github.com/
 
 For usage in [Testcontainers](https://www.testcontainers.org/) see [KeycloakExtension.java](src/test/java/io/kokuwa/keycloak/metrics/junit/KeycloakExtension.java#L57-L68)
 
+### Container Image
+
+Registries:
+
+* [ghcr.io/kokuwaio/keycloak-event-metrics](https://github.com/kokuwaio/keycloak-event-metrics/pkgs/container/keycloak-event-metrics)
+* [docker.io/kokuwaio/keycloak-event-metrics](https://hub.docker.com/r/kokuwaio/keycloak-event-metrics)
+
+This images are based on busybox, so you can use cp to copy the jar into your keycloak.
+
 ### Docker
 
 Check: [kokuwaio/keycloak](https://github.com/kokuwaio/keycloak)
