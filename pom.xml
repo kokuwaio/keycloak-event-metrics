@@ -65,6 +65,8 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 
+		<maven.release.releaseProfiles>deploy,site,ossrh,release</maven.release.releaseProfiles>
+
 		<!-- ===================================================================== -->
 		<!-- ============================== Libaries ============================= -->
 		<!-- ===================================================================== -->
@@ -220,4 +222,60 @@
 
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<resources>
+										<resource>
+											<directory>${project.basedir}/src/main/docker</directory>
+											<filtering>true</filtering>
+										</resource>
+									</resources>
+									<outputDirectory>${project.build.directory}</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>deploy</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<executable>docker</executable>
+									<arguments>
+										<argument>build</argument>
+										<argument>${project.build.directory}</argument>
+										<argument>--tag=ghcr.io/kokuwaio/keycloak-event-metrics:latest</argument>
+										<argument>--tag=ghcr.io/kokuwaio/keycloak-event-metrics:${project.version}</argument>
+										<argument>--tag=docker.io/kokuwaio/keycloak-event-metrics:latest</argument>
+										<argument>--tag=docker.io/kokuwaio/keycloak-event-metrics:${project.version}</argument>
+										<argument>--push</argument>
+									</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
