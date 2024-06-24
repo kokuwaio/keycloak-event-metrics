@@ -1,6 +1,6 @@
 # Keycloak Metrics
 
-Provides metrics for Keycloak user/admin events and user/client/session count. Tested on Keycloak [21-24](.github/workflows/pr.yaml#L50-L54).
+Provides metrics for Keycloak user/admin events and user/client/session count. Tested on Keycloak [21-25](.github/workflows/pr.yaml#L50-L55).
 
 [![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/kokuwaio/keycloak-event-metrics.svg?label=License)](http://www.apache.org/licenses/)
 [![Maven Central](https://img.shields.io/maven-central/v/io.kokuwa.keycloak/keycloak-event-metrics.svg?label=Maven%20Central)](https://central.sonatype.com/search?namespace=io.kokuwa.keycloak&q=keycloak-event-metrics)
@@ -149,13 +149,12 @@ RUN mv ${METRICS_FILE} /opt/keycloak/providers
 ### build keycloak with metrics
 ###
 
-FROM quay.io/keycloak/keycloak:23.0.7
+FROM quay.io/keycloak/keycloak:25.0.1
 
 ENV KEYCLOAK_ADMIN=admin
 ENV KEYCLOAK_ADMIN_PASSWORD=password
 ENV KC_HEALTH_ENABLED=true
 ENV KC_METRICS_ENABLED=true
-ENV KC_LOG_CONSOLE_COLOR=true
 
 COPY --from=metrics /opt/keycloak/providers /opt/keycloak/providers
 RUN /opt/keycloak/bin/kc.sh build

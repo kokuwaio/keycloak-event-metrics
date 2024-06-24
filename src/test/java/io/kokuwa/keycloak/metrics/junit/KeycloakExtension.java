@@ -54,8 +54,9 @@ public class KeycloakExtension implements BeforeAllCallback, ParameterResolver {
 		var container = new GenericContainer<>("quay.io/keycloak/keycloak:" + version)
 				.withEnv("KEYCLOAK_ADMIN", "admin")
 				.withEnv("KEYCLOAK_ADMIN_PASSWORD", "password")
-				.withEnv("KC_LOG_CONSOLE_COLOR", "true")
 				.withEnv("KC_LOG_LEVEL", "io.kokuwa:trace")
+				// otherwise port 9000 will be used, with this config we can test different keycloak versions
+				.withEnv("KC_LEGACY_OBSERVABILITY_INTERFACE", "true")
 				.withEnv("KC_HEALTH_ENABLED", "true")
 				.withEnv("KC_METRICS_ENABLED", "true")
 				.withEnv("KC_METRICS_STATS_ENABLED", "true")
