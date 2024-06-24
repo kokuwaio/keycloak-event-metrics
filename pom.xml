@@ -206,18 +206,6 @@
 				</executions>
 			</plugin>
 
-			<!-- flatten fails because of groupId ${ee.maven.groupId} - skip -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>flatten-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>default</id>
-						<phase/>
-					</execution>
-				</executions>
-			</plugin>
-
 		</plugins>
 	</build>
 </project>
