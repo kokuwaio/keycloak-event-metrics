@@ -33,7 +33,6 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: maven
-      - run: mvn $MAVEN_ARGS dependency:go-offline
       - run: mvn $MAVEN_ARGS verify
       - run: mvn $MAVEN_ARGS site
       - uses: actions/upload-artifact@v4
