@@ -13,6 +13,7 @@ import org.keycloak.events.EventType;
 import org.keycloak.events.admin.AdminEvent;
 import org.keycloak.events.admin.OperationType;
 import org.keycloak.events.admin.ResourceType;
+import org.keycloak.models.ClientModel;
 import org.keycloak.models.KeycloakContext;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
@@ -37,6 +38,8 @@ public class MetricsEventListenerTest extends AbstractMockitoTest {
 	@Mock
 	RealmProvider realmProvider;
 	@Mock
+	ClientModel clientModel;
+	@Mock
 	KeycloakContext context;
 
 	@DisplayName("onEvent(true)")
@@ -54,8 +57,10 @@ public class MetricsEventListenerTest extends AbstractMockitoTest {
 
 			when(session.getContext()).thenReturn(context);
 			when(context.getRealm()).thenReturn(realmModel);
+			when(context.getClient()).thenReturn(clientModel);
 			when(realmModel.getId()).thenReturn(realmId);
 			when(realmModel.getName()).thenReturn(realmName);
+			when(clientModel.getClientId()).thenReturn(clientId);
 
 			listener(true).onEvent(toEvent(realmId, clientId, type, null));
 			assertEvent(realmName, clientId, type.toString(), "");
@@ -73,8 +78,10 @@ public class MetricsEventListenerTest extends AbstractMockitoTest {
 
 			when(session.getContext()).thenReturn(context);
 			when(context.getRealm()).thenReturn(realmModel);
+			when(context.getClient()).thenReturn(clientModel);
 			when(realmModel.getId()).thenReturn(realmId);
 			when(realmModel.getName()).thenReturn(realmName);
+			when(clientModel.getClientId()).thenReturn(clientId);
 
 			listener(true).onEvent(toEvent(realmId, clientId, type, error));
 			assertEvent(realmName, clientId, type.toString(), error);
@@ -91,7 +98,7 @@ public class MetricsEventListenerTest extends AbstractMockitoTest {
 			when(realmModel.getName()).thenReturn(realmName);
 
 			listener(true).onEvent(toEvent(null, null, null, null));
-			assertEvent(realmName, "", "", "");
+			assertEvent(realmName, "UNKNOWN", "", "");
 		}
 
 		@DisplayName("replace(true) - context is null")
@@ -108,7 +115,7 @@ public class MetricsEventListenerTest extends AbstractMockitoTest {
 			when(realmModel.getName()).thenReturn(realmName);
 
 			listener(true).onEvent(toEvent(realmId, clientId, type, null));
-			assertEvent(realmName, clientId, type.toString(), "");
+			assertEvent(realmName, "UNKNOWN", type.toString(), "");
 		}
 
 		@DisplayName("replace(true) - context is empty")
@@ -126,7 +133,7 @@ public class MetricsEventListenerTest extends AbstractMockitoTest {
 			when(realmModel.getName()).thenReturn(realmName);
 
 			listener(true).onEvent(toEvent(realmId, clientId, type, null));
-			assertEvent(realmName, clientId, type.toString(), "");
+			assertEvent(realmName, "UNKNOWN", type.toString(), "");
 		}
 
 		@DisplayName("replace(true) - realmId is unknown")
@@ -140,7 +147,9 @@ public class MetricsEventListenerTest extends AbstractMockitoTest {
 			when(session.getContext()).thenReturn(context);
 			when(session.realms()).thenReturn(realmProvider);
 			when(context.getRealm()).thenReturn(realmModel);
+			when(context.getClient()).thenReturn(clientModel);
 			when(realmModel.getId()).thenReturn(UUID.randomUUID().toString());
+			when(clientModel.getClientId()).thenReturn(clientId);
 
 			listener(true).onEvent(toEvent(realmId, clientId, type, null));
 			assertEvent(realmId, clientId, type.toString(), "");
@@ -155,7 +164,7 @@ public class MetricsEventListenerTest extends AbstractMockitoTest {
 			var type = EventType.LOGIN;
 
 			listener(false).onEvent(toEvent(realmId, clientId, type, null));
-			assertEvent(realmId, clientId, type.toString(), "");
+			assertEvent(realmId, "UNKNOWN", type.toString(), "");
 		}
 
 		@DisplayName("replace(false) - with error")
@@ -168,14 +177,14 @@ public class MetricsEventListenerTest extends AbstractMockitoTest {
 			var error = UUID.randomUUID().toString();
 
 			listener(false).onEvent(toEvent(realmId, clientId, type, error));
-			assertEvent(realmId, clientId, type.toString(), error);
+			assertEvent(realmId, "UNKNOWN", type.toString(), error);
 		}
 
 		@DisplayName("replace(false) - all fields empty")
 		@Test
 		void notReplaceFieldsEmpty() {
 			listener(false).onEvent(toEvent(null, null, null, null));
-			assertEvent("", "", "", "");
+			assertEvent("", "UNKNOWN", "", "");
 		}
 
 		private Event toEvent(String realmId, String clientId, EventType type, String error) {

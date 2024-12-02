@@ -48,6 +48,9 @@ public class KeycloakIT {
 		keycloak.createClient(realmName2, clientId2);
 		keycloak.createUser(realmName2, username2, password2);
 
+		var clientId3 = realmName2 + "_" + UUID.randomUUID();
+		var clientId4 = realmName2 + "_" + UUID.randomUUID();
+
 		prometheus.scrap();
 		var loginBefore = prometheus.userEvent(EventType.LOGIN);
 		var loginBefore1 = prometheus.userEvent(EventType.LOGIN, realmName1, clientId1);
@@ -55,10 +58,13 @@ public class KeycloakIT {
 		var loginErrorBefore = prometheus.userEvent(EventType.LOGIN_ERROR);
 		var loginErrorBefore1 = prometheus.userEvent(EventType.LOGIN_ERROR, realmName1, clientId1);
 		var loginErrorBefore2 = prometheus.userEvent(EventType.LOGIN_ERROR, realmName2, clientId2);
+		var loginErrorBeforeUNKNOWN = prometheus.userEvent(EventType.LOGIN_ERROR, realmName2, "UNKNOWN");
 
 		assertDoesNotThrow(() -> keycloak.login(clientId1, realmName1, username1, password1));
 		assertDoesNotThrow(() -> keycloak.login(clientId1, realmName1, username1, password1));
 		assertDoesNotThrow(() -> keycloak.login(clientId2, realmName2, username2, password2));
+		assertThrows(NotAuthorizedException.class, () -> keycloak.login(clientId3, realmName2, "nope", "nö"));
+		assertThrows(NotAuthorizedException.class, () -> keycloak.login(clientId4, realmName2, "foo", "bar"));
 		assertThrows(NotAuthorizedException.class, () -> keycloak.login(clientId2, realmName2, username2, "nope"));
 
 		prometheus.scrap();
@@ -68,14 +74,20 @@ public class KeycloakIT {
 		var loginErrorAfter = prometheus.userEvent(EventType.LOGIN_ERROR);
 		var loginErrorAfter1 = prometheus.userEvent(EventType.LOGIN_ERROR, realmName1, clientId1);
 		var loginErrorAfter2 = prometheus.userEvent(EventType.LOGIN_ERROR, realmName2, clientId2);
+		var loginErrorAfter3 = prometheus.userEvent(EventType.LOGIN_ERROR, realmName2, clientId3);
+		var loginErrorAfter4 = prometheus.userEvent(EventType.LOGIN_ERROR, realmName2, clientId4);
+		var loginErrorAfterUNKNOWN = prometheus.userEvent(EventType.LOGIN_ERROR, realmName2, "UNKNOWN");
 
 		assertAll("prometheus",
 				() -> assertEquals(loginBefore + 3, loginAfter, "login success total"),
 				() -> assertEquals(loginBefore1 + 2, loginAfter1, "login success #1"),
 				() -> assertEquals(loginBefore2 + 1, loginAfter2, "login success #2"),
-				() -> assertEquals(loginErrorBefore + 1, loginErrorAfter, "login failure total"),
+				() -> assertEquals(loginErrorBefore + 3, loginErrorAfter, "login failure total"),
 				() -> assertEquals(loginErrorBefore1 + 0, loginErrorAfter1, "login failure #1"),
-				() -> assertEquals(loginErrorBefore2 + 1, loginErrorAfter2, "login failure #2"));
+				() -> assertEquals(loginErrorBefore2 + 1, loginErrorAfter2, "login failure #2"),
+				() -> assertEquals(0, loginErrorAfter3, "login failure #3"),
+				() -> assertEquals(0, loginErrorAfter4, "login failure #4"),
+				() -> assertEquals(loginErrorBeforeUNKNOWN + 2 , loginErrorAfterUNKNOWN, "login failure UNKNOWN"));
 	}
 
 	@DisplayName("user count")

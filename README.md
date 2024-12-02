@@ -27,7 +27,7 @@ User events are added with key `keycloak_event_user_total` and tags:
 
 * `type`: [EventType](https://github.com/keycloak/keycloak/blob/main/server-spi-private/src/main/java/org/keycloak/events/EventType.java#L27) from [Event#type](https://github.com/keycloak/keycloak/blob/main/server-spi-private/src/main/java/org/keycloak/events/Event.java#L44)
 * `realm`: realm id from [Event#realmId](https://github.com/keycloak/keycloak/blob/main/server-spi-private/src/main/java/org/keycloak/events/Event.java#L46)
-* `client`: client id from [Event#clientId](https://github.com/keycloak/keycloak/blob/main/server-spi-private/src/main/java/org/keycloak/events/Event.java#L48)
+* `client`: client id from [Event#clientId](https://github.com/keycloak/keycloak/blob/main/server-spi-private/src/main/java/org/keycloak/events/Event.java#L48), unknown client_ids are grouped into UNKOWN
 * `error`: error from [Event#error](https://github.com/keycloak/keycloak/blob/main/server-spi-private/src/main/java/org/keycloak/events/Event.java#L56), only present for error types
 
 Examples:
@@ -36,6 +36,7 @@ Examples:
 keycloak_event_user_total{client="test",realm="9039a0b5-e8c9-437a-a02e-9d91b04548a4",type="LOGIN",error="",} 2.0
 keycloak_event_user_total{client="test",realm="1fdb3465-1675-49e8-88ad-292e2f42ee72",type="LOGIN",error="",} 1.0
 keycloak_event_user_total{client="test",realm="1fdb3465-1675-49e8-88ad-292e2f42ee72",type="LOGIN_ERROR",error="invalid_user_credentials",} 1.0
+keycloak_event_user_total{client="UNKNOWN",realm="1fdb3465-1675-49e8-88ad-292e2f42ee72",type="LOGIN_ERROR",error="invalid_user_credentials",} 1.0
 ```
 
 ### Admin Events

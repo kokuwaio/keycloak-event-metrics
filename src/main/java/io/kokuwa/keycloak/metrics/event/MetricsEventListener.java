@@ -1,11 +1,13 @@
 package io.kokuwa.keycloak.metrics.event;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.jboss.logging.Logger;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.admin.AdminEvent;
+import org.keycloak.models.ClientModel;
 import org.keycloak.models.KeycloakContext;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
@@ -33,7 +35,7 @@ public class MetricsEventListener implements EventListenerProvider, AutoCloseabl
 		Metrics.counter("keycloak_event_user",
 				"realm", toBlank(replaceIds ? getRealmName(event.getRealmId()) : event.getRealmId()),
 				"type", toBlank(event.getType()),
-				"client", toBlank(event.getClientId()),
+				"client", getClientId(event.getClientId()),
 				"error", toBlank(event.getError()))
 				.increment();
 	}
@@ -62,6 +64,17 @@ public class MetricsEventListener implements EventListenerProvider, AutoCloseabl
 				.orElseGet(() -> {
 					log.warnv("Failed to find realm with id {0}", id);
 					return id;
+				});
+	}
+
+	private String getClientId(String clientId) {
+		return Optional.ofNullable(session.getContext())
+				.map(KeycloakContext::getClient)
+				.filter(model -> Objects.equals(model.getClientId(), clientId))
+				.map(ClientModel::getClientId)
+				.orElseGet(() -> {
+					log.tracev("Client for id {0} is unknown", clientId);
+					return "UNKNOWN";
 				});
 	}
 
