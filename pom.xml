@@ -6,12 +6,12 @@
 		<groupId>io.kokuwa.maven</groupId>
 		<artifactId>maven-parent</artifactId>
 		<version>0.6.17</version>
-		<relativePath/>
+		<relativePath />
 	</parent>
 
 	<groupId>io.kokuwa.keycloak</groupId>
 	<artifactId>keycloak-event-metrics</artifactId>
-	<version>1.1.0-SNAPSHOT</version>
+	<version>1.1.0</version>
 
 	<name>Keycloak Metrics</name>
 	<description>Provides metrics for Keycloak user/admin events</description>
@@ -45,7 +45,7 @@
 		<url>https://github.com/kokuwaio/keycloak-event-metrics</url>
 		<connection>scm:git:https://github.com/kokuwaio/keycloak-event-metrics.git</connection>
 		<developerConnection>scm:git:https://github.com/kokuwaio/keycloak-event-metrics.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>1.1.0</tag>
 	</scm>
 	<issueManagement>
 		<system>github</system>
@@ -215,7 +215,7 @@
 				<executions>
 					<execution>
 						<id>default</id>
-						<phase/>
+						<phase />
 					</execution>
 				</executions>
 			</plugin>
