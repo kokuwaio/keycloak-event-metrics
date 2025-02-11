@@ -71,7 +71,7 @@
 		<!-- ============================== Libaries ============================= -->
 		<!-- ===================================================================== -->
 
-		<version.org.keycloak>26.1.1</version.org.keycloak>
+		<version.org.keycloak>26.1.2</version.org.keycloak>
 		<version.org.keycloak.test>${version.org.keycloak}</version.org.keycloak.test>
 		<version.org.testcontainers>1.18.3</version.org.testcontainers>
 
