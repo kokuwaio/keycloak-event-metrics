@@ -66,6 +66,7 @@ public class MetricsStatsTask implements Provider, ScheduledTask {
 
 	private void scrape(KeycloakSession session) {
 		session.realms().getRealmsStream().forEach(realm -> {
+			session.getContext().setRealm(realm);
 			log.tracev("Scrape for realm {0}.", realm.getName());
 			var tagRealm = Tag.of("realm", realm.getName());
 			gauge("keycloak_users", Set.of(tagRealm), session.users().getUsersCount(realm), true);

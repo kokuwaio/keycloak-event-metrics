@@ -16,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.ClientProvider;
+import org.keycloak.models.KeycloakContext;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RealmProvider;
@@ -121,6 +122,7 @@ public class MetricsStatsTaskTest extends AbstractMockitoTest {
 		when(session.clients()).thenReturn(clientProvider);
 		when(session.users()).thenReturn(userProvider);
 		when(session.sessions()).thenReturn(sessionProvider);
+		when(session.getContext()).thenReturn(mock(KeycloakContext.class));
 		when(realmProvider.getRealmsStream()).then(i -> Stream.of(realmModel));
 
 		// empty realm
