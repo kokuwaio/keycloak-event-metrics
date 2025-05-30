@@ -95,12 +95,12 @@
 		<version.org.apache.maven.plugins.site>3.21.0</version.org.apache.maven.plugins.site>
 		<version.org.apache.maven.plugins.source>3.3.1</version.org.apache.maven.plugins.source>
 		<version.org.apache.maven.plugins.surefire>3.5.3</version.org.apache.maven.plugins.surefire>
-		<version.org.codehaus.mojo.exec>3.5.1</version.org.codehaus.mojo.exec>
 		<version.org.codehaus.mojo.tidy>1.4.0</version.org.codehaus.mojo.tidy>
 		<version.org.codehaus.mojo.versions>2.18.0</version.org.codehaus.mojo.versions>
 		<version.org.sonatype.plugins.nexus>1.7.0</version.org.sonatype.plugins.nexus>
 		<version.net.revelc.code.formatter>2.26.0</version.net.revelc.code.formatter>
 		<version.net.revelc.code.impsort>1.12.0</version.net.revelc.code.impsort>
+		<version.io.fabric8.docker>0.46.0</version.io.fabric8.docker>
 
 		<version.org.keycloak>26.2.5</version.org.keycloak>
 		<version.org.keycloak.test>${version.org.keycloak}</version.org.keycloak.test>
@@ -219,7 +219,6 @@
 	</dependencies>
 
 	<build>
-		<finalName>${project.artifactId}</finalName>
 		<testResources>
 			<testResource>
 				<directory>${project.basedir}/src/test/resources</directory>
@@ -310,11 +309,6 @@
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>exec-maven-plugin</artifactId>
-					<version>${version.org.codehaus.mojo.exec}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>tidy-maven-plugin</artifactId>
 					<version>${version.org.codehaus.mojo.tidy}</version>
 				</plugin>
@@ -346,6 +340,11 @@
 					<groupId>net.revelc.code</groupId>
 					<artifactId>impsort-maven-plugin</artifactId>
 					<version>${version.net.revelc.code.impsort}</version>
+				</plugin>
+				<plugin>
+					<groupId>io.fabric8</groupId>
+					<artifactId>docker-maven-plugin</artifactId>
+					<version>${version.io.fabric8.docker}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -516,49 +515,91 @@
 
 					<!-- docker image -->
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-resources-plugin</artifactId>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
 						<executions>
 							<execution>
-								<phase>prepare-package</phase>
+								<id>build</id>
+								<phase>install</phase>
 								<goals>
-									<goal>copy-resources</goal>
+									<goal>build</goal>
 								</goals>
-								<configuration>
-									<resources>
-										<resource>
-											<directory>${project.basedir}/src/main/docker</directory>
-											<filtering>true</filtering>
-										</resource>
-									</resources>
-									<outputDirectory>${project.build.directory}</outputDirectory>
-								</configuration>
 							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>exec-maven-plugin</artifactId>
-						<executions>
 							<execution>
+								<id>push</id>
 								<phase>deploy</phase>
 								<goals>
-									<goal>exec</goal>
+									<goal>push</goal>
 								</goals>
-								<configuration>
-									<executable>docker</executable>
-									<arguments>
-										<argument>build</argument>
-										<argument>${project.build.directory}</argument>
-										<argument>--tag=ghcr.io/kokuwaio/keycloak-event-metrics:latest</argument>
-										<argument>--tag=ghcr.io/kokuwaio/keycloak-event-metrics:${project.version}</argument>
-										<argument>--tag=docker.io/kokuwaio/keycloak-event-metrics:latest</argument>
-										<argument>--tag=docker.io/kokuwaio/keycloak-event-metrics:${project.version}</argument>
-										<argument>--push</argument>
-									</arguments>
-								</configuration>
 							</execution>
 						</executions>
+						<configuration>
+							<verbose>build</verbose>
+							<images>
+								<image>
+									<name>docker.io/kokuwaio/keycloak-event-metrics:${project.version}</name>
+									<build>
+										<from>docker.io/library/busybox:1.37.0-uclibc@sha256:cc57e0ff4b6d3138931ff5c7180d18078813300e2508a25fb767a4d36df30d4d</from>
+										<assembly>
+											<basedir>${file.separator}</basedir>
+											<inline>
+												<files>
+													<file>
+														<source>${project.build.directory}/${project.build.finalName}.jar</source>
+														<destName>${project.artifactId}.jar</destName>
+														<fileMode>444</fileMode>
+													</file>
+												</files>
+											</inline>
+										</assembly>
+										<labels>
+											<!-- https://github.com/opencontainers/image-spec/blob/main/annotations.md -->
+											<org.opencontainers.image.title>${project.name}</org.opencontainers.image.title>
+											<org.opencontainers.image.description>${project.description}</org.opencontainers.image.description>
+											<org.opencontainers.image.url>${project.url}</org.opencontainers.image.url>
+											<org.opencontainers.image.source>${project.scm.url}</org.opencontainers.image.source>
+											<org.opencontainers.image.vendor>${project.organization.name}</org.opencontainers.image.vendor>
+											<org.opencontainers.image.authors>https://github.com/orgs/kokuwaio/people</org.opencontainers.image.authors>
+											<org.opencontainers.image.licenses>${project.licenses[0].name}</org.opencontainers.image.licenses>
+											<org.opencontainers.image.version>${project.version}</org.opencontainers.image.version>
+											<org.opencontainers.image.base.name>docker.io/library/busybox:1.37.0-uclibc</org.opencontainers.image.base.name>
+											<org.opencontainers.image.base.digest>sha256:cc57e0ff4b6d3138931ff5c7180d18078813300e2508a25fb767a4d36df30d4d</org.opencontainers.image.base.digest>
+										</labels>
+									</build>
+								</image>
+								<image>
+									<name>ghcr.io/kokuwaio/keycloak-event-metrics:${project.version}</name>
+									<build>
+										<from>docker.io/library/busybox:1.37.0-uclibc@sha256:cc57e0ff4b6d3138931ff5c7180d18078813300e2508a25fb767a4d36df30d4d</from>
+										<assembly>
+											<basedir>${file.separator}</basedir>
+											<inline>
+												<files>
+													<file>
+														<source>${project.build.directory}/${project.build.finalName}.jar</source>
+														<destName>${project.artifactId}.jar</destName>
+														<fileMode>444</fileMode>
+													</file>
+												</files>
+											</inline>
+										</assembly>
+										<labels>
+											<!-- https://github.com/opencontainers/image-spec/blob/main/annotations.md -->
+											<org.opencontainers.image.title>${project.name}</org.opencontainers.image.title>
+											<org.opencontainers.image.description>${project.description}</org.opencontainers.image.description>
+											<org.opencontainers.image.url>${project.url}</org.opencontainers.image.url>
+											<org.opencontainers.image.source>${project.scm.url}</org.opencontainers.image.source>
+											<org.opencontainers.image.vendor>${project.organization.name}</org.opencontainers.image.vendor>
+											<org.opencontainers.image.authors>https://github.com/orgs/kokuwaio/people</org.opencontainers.image.authors>
+											<org.opencontainers.image.licenses>${project.licenses[0].name}</org.opencontainers.image.licenses>
+											<org.opencontainers.image.version>${project.version}</org.opencontainers.image.version>
+											<org.opencontainers.image.base.name>docker.io/library/busybox:1.37.0-uclibc</org.opencontainers.image.base.name>
+											<org.opencontainers.image.base.digest>sha256:cc57e0ff4b6d3138931ff5c7180d18078813300e2508a25fb767a4d36df30d4d</org.opencontainers.image.base.digest>
+										</labels>
+									</build>
+								</image>
+							</images>
+						</configuration>
 					</plugin>
 
 				</plugins>
