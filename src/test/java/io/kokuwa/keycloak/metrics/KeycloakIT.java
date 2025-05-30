@@ -10,6 +10,8 @@ import java.time.Instant;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import jakarta.ws.rs.NotAuthorizedException;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +20,6 @@ import org.keycloak.events.EventType;
 import io.kokuwa.keycloak.metrics.junit.KeycloakClient;
 import io.kokuwa.keycloak.metrics.junit.KeycloakExtension;
 import io.kokuwa.keycloak.metrics.junit.Prometheus;
-import jakarta.ws.rs.NotAuthorizedException;
 
 /**
  * Integration tests with Keycloak.
@@ -87,7 +88,7 @@ public class KeycloakIT {
 				() -> assertEquals(loginErrorBefore2 + 1, loginErrorAfter2, "login failure #2"),
 				() -> assertEquals(0, loginErrorAfter3, "login failure #3"),
 				() -> assertEquals(0, loginErrorAfter4, "login failure #4"),
-				() -> assertEquals(loginErrorBeforeUNKNOWN + 2 , loginErrorAfterUNKNOWN, "login failure UNKNOWN"));
+				() -> assertEquals(loginErrorBeforeUNKNOWN + 2, loginErrorAfterUNKNOWN, "login failure UNKNOWN"));
 	}
 
 	@DisplayName("user count")

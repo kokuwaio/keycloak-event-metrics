@@ -3,7 +3,7 @@ name: PullRequest
 on: pull_request
 
 env:
-  MAVEN_ARGS: --batch-mode --color=always --no-transfer-progress -Dmaven.test.redirectTestOutputToFile=false
+  MAVEN_ARGS: --batch-mode --color=always --no-transfer-progress
 
 jobs:
 
@@ -34,11 +34,6 @@ jobs:
           java-version: 17
           cache: maven
       - run: mvn $MAVEN_ARGS verify
-      - run: mvn $MAVEN_ARGS site
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          path: target/site
 
   versions:
     runs-on: ubuntu-latest
@@ -52,7 +47,7 @@ jobs:
           - 25.0.6
           - 26.0.8
           - 26.1.5
-          - 26.2.1
+          - 26.2.5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4

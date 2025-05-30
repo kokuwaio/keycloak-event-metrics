@@ -2,13 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>io.kokuwa.maven</groupId>
-		<artifactId>maven-parent</artifactId>
-		<version>0.6.18</version>
-		<relativePath />
-	</parent>
-
 	<groupId>io.kokuwa.keycloak</groupId>
 	<artifactId>keycloak-event-metrics</artifactId>
 	<version>1.1.2-SNAPSHOT</version>
@@ -31,12 +24,10 @@
 
 	<developers>
 		<developer>
-			<id>sschnabe</id>
+			<id>stephan.schnabel</id>
 			<name>Stephan Schnabel</name>
-			<url>https://github.com/sschnabe</url>
-			<email>stephan@grayc.de</email>
-			<organization>GrayC GmbH</organization>
-			<organizationUrl>https://grayc.de</organizationUrl>
+			<url>https://schnabel.org</url>
+			<email>stephan@schnabel.org</email>
 			<timezone>Europe/Berlin</timezone>
 		</developer>
 	</developers>
@@ -55,6 +46,16 @@
 		<system>github</system>
 		<url>https://github.com/kokuwaio/keycloak-event-metrics/actions</url>
 	</ciManagement>
+	<distributionManagement>
+		<repository>
+			<id>sonatype-nexus</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+		<snapshotRepository>
+			<id>sonatype-nexus</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<properties>
 
@@ -62,14 +63,44 @@
 		<!-- =============================== Build =============================== -->
 		<!-- ===================================================================== -->
 
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
+		<project.build.outputTimestamp>2025-04-28T12:25:49Z</project.build.outputTimestamp>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.propertiesEncoding>ISO-8859-1</project.build.propertiesEncoding>
 
-		<maven.release.releaseProfiles>deploy,site,ossrh,release</maven.release.releaseProfiles>
+		<maven.compiler.release>17</maven.compiler.release>
+		<maven.compiler.source>${maven.compiler.release}</maven.compiler.source>
+		<maven.compiler.target>${maven.compiler.release}</maven.compiler.target>
+		<maven.compiler.compilerArgument>-Xlint:all</maven.compiler.compilerArgument>
+		<maven.compiler.failOnWarning>true</maven.compiler.failOnWarning>
+		<maven.compiler.showWarnings>true</maven.compiler.showWarnings>
+		<maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
+
+		<impsort.removeUnused>true</impsort.removeUnused>
+		<impsort.groups>java.,javax.,jakarta.,org.</impsort.groups>
+		<formatter.configFile>${project.basedir}/src/eclipse/formatter.xml</formatter.configFile>
 
 		<!-- ===================================================================== -->
-		<!-- ============================== Libaries ============================= -->
+		<!-- ============================= Versions ============================== -->
 		<!-- ===================================================================== -->
+
+		<version.org.apache.maven.plugins.clean>3.4.1</version.org.apache.maven.plugins.clean>
+		<version.org.apache.maven.plugins.compiler>3.14.0</version.org.apache.maven.plugins.compiler>
+		<version.org.apache.maven.plugins.deploy>3.1.4</version.org.apache.maven.plugins.deploy>
+		<version.org.apache.maven.plugins.gpg>3.2.7</version.org.apache.maven.plugins.gpg>
+		<version.org.apache.maven.plugins.install>3.1.4</version.org.apache.maven.plugins.install>
+		<version.org.apache.maven.plugins.jar>3.4.2</version.org.apache.maven.plugins.jar>
+		<version.org.apache.maven.plugins.javadoc>3.11.2</version.org.apache.maven.plugins.javadoc>
+		<version.org.apache.maven.plugins.release>3.1.1</version.org.apache.maven.plugins.release>
+		<version.org.apache.maven.plugins.resources>3.3.1</version.org.apache.maven.plugins.resources>
+		<version.org.apache.maven.plugins.site>3.21.0</version.org.apache.maven.plugins.site>
+		<version.org.apache.maven.plugins.source>3.3.1</version.org.apache.maven.plugins.source>
+		<version.org.apache.maven.plugins.surefire>3.5.3</version.org.apache.maven.plugins.surefire>
+		<version.org.codehaus.mojo.exec>3.5.1</version.org.codehaus.mojo.exec>
+		<version.org.codehaus.mojo.tidy>1.4.0</version.org.codehaus.mojo.tidy>
+		<version.org.codehaus.mojo.versions>2.18.0</version.org.codehaus.mojo.versions>
+		<version.org.sonatype.plugins.nexus>1.7.0</version.org.sonatype.plugins.nexus>
+		<version.net.revelc.code.formatter>2.26.0</version.net.revelc.code.formatter>
+		<version.net.revelc.code.impsort>1.12.0</version.net.revelc.code.impsort>
 
 		<version.org.keycloak>26.2.5</version.org.keycloak>
 		<version.org.keycloak.test>${version.org.keycloak}</version.org.keycloak.test>
@@ -188,12 +219,136 @@
 	</dependencies>
 
 	<build>
+		<finalName>${project.artifactId}</finalName>
 		<testResources>
 			<testResource>
 				<directory>${project.basedir}/src/test/resources</directory>
 				<filtering>true</filtering>
 			</testResource>
 		</testResources>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.clean}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.compiler}</version>
+					<configuration>
+						<compilerArgument>${maven.compiler.compilerArgument}</compilerArgument>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.deploy}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.surefire}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-gpg-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.gpg}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.install}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.jar}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.javadoc}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.release}</version>
+					<configuration>
+						<preparationGoals>clean verify</preparationGoals>
+						<preparationProfiles>check</preparationProfiles>
+						<goals>deploy</goals>
+						<releaseProfiles>deploy,release</releaseProfiles>
+						<signTag>true</signTag>
+						<scmReleaseCommitComment>@{prefix} prepare release @{releaseLabel} [CI SKIP]</scmReleaseCommitComment>
+						<tagNameFormat>@{project.version}</tagNameFormat>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.resources}</version>
+					<configuration>
+						<propertiesEncoding>${project.build.propertiesEncoding}</propertiesEncoding>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.site}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.source}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.surefire}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>${version.org.codehaus.mojo.exec}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>tidy-maven-plugin</artifactId>
+					<version>${version.org.codehaus.mojo.tidy}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>versions-maven-plugin</artifactId>
+					<version>${version.org.codehaus.mojo.versions}</version>
+					<configuration>
+						<generateBackupPoms>false</generateBackupPoms>
+						<ignoredVersions>
+							<ignoredVersion>^.*-(alpha|beta|M)-?[0-9]+$</ignoredVersion>
+						</ignoredVersions>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.sonatype.plugins</groupId>
+					<artifactId>nexus-staging-maven-plugin</artifactId>
+					<version>${version.org.sonatype.plugins.nexus}</version>
+				</plugin>
+				<plugin>
+					<groupId>net.revelc.code.formatter</groupId>
+					<artifactId>formatter-maven-plugin</artifactId>
+					<version>${version.net.revelc.code.formatter}</version>
+					<configuration>
+						<configFile>${formatter.configFile}</configFile>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>net.revelc.code</groupId>
+					<artifactId>impsort-maven-plugin</artifactId>
+					<version>${version.net.revelc.code.impsort}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 
 			<!-- run tests -->
@@ -210,13 +365,13 @@
 				</executions>
 			</plugin>
 
-			<!-- flatten fails because of groupId ${ee.maven.groupId} - skip -->
+			<!-- disable default executions -->
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>flatten-maven-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>default</id>
+						<id>default-install</id>
 						<phase />
 					</execution>
 				</executions>
@@ -227,9 +382,139 @@
 
 	<profiles>
 		<profile>
-			<id>release</id>
+			<id>dev</id>
+			<activation>
+				<property>
+					<name>!env.CI</name>
+				</property>
+			</activation>
+			<properties>
+				 <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
+			</properties>
 			<build>
 				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>tidy-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>validate</phase>
+								<goals>
+									<goal>pom</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>net.revelc.code</groupId>
+						<artifactId>impsort-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>validate</phase>
+								<goals>
+									<goal>sort</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>net.revelc.code.formatter</groupId>
+						<artifactId>formatter-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>validate</phase>
+								<goals>
+									<goal>format</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>check</id>
+			<activation>
+				<property>
+					<name>env.CI</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>tidy-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>validate</phase>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>net.revelc.code</groupId>
+						<artifactId>impsort-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>validate</phase>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>net.revelc.code.formatter</groupId>
+						<artifactId>formatter-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>validate</phase>
+								<goals>
+									<goal>validate</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>deploy</id>
+			<activation>
+				<property>
+					<name>env.CI</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+
+					<!-- add source/javadoc for downstream projects -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>javadoc-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- docker image -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-resources-plugin</artifactId>
@@ -274,6 +559,39 @@
 								</configuration>
 							</execution>
 						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+
+					<!-- sign before upload -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- autoclose sonatype nexus repo -->
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>sonatype-nexus</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
 					</plugin>
 
 				</plugins>
