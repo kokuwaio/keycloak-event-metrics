@@ -1,0 +1,26 @@
+when:
+  event: [manual, pull_request]
+  path: [.woodpecker/versions.yaml, pom.xml, src/**]
+
+depends_on: [verify]
+matrix:
+  KEYCLOAK_VERSION:
+    - 22.0.5
+    - 23.0.7
+    - 24.0.5
+    - 25.0.6
+    - 26.2.5
+
+services:
+  - name: dockerd
+    image: kokuwaio/dockerd
+    privileged: true
+    ports: [2375, 8080]
+
+steps:
+
+  test:
+    image: maven:3.9.10-eclipse-temurin-17
+    commands: mvn verify -Dversion.org.keycloak.test="$KEYCLOAK_VERSION" -P-deploy,-check
+    environment:
+      MAVEN_ARGS: --batch-mode --color=always --no-transfer-progress --settings=.woodpecker/maven/settings.xml

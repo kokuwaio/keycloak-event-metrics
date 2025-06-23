@@ -1,50 +1,42 @@
-name: Build
+name: Verify
 
 on:
-  push:
-    branches: [main]
+  - pull_request
+  - push:
+      branches: [main]
+
+env:
+  MAVEN_ARGS: --batch-mode --color=always --no-transfer-progress
 
 jobs:
 
   build:
     runs-on: ubuntu-latest
-    env:
-      MAVEN_ARGS: --batch-mode --color=always --no-transfer-progress --settings=.github/settings.xml
     steps:
-      - name: docker/login-action docker.io
-        uses: docker/login-action@v3.4.0
-        with:
-          registry: docker.io
-          username: ${{ secrets.DOCKERIO_USERNAME }}
-          password: ${{ secrets.DOCKERIO_TOKEN }}
-      - name: docker/login-action ghcr.io
-        uses: docker/login-action@v3.4.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GIT_ACTION_TOKEN }}
-      - run: git config --global user.name "${{ vars.KOKUWA_IO_BOT_NAME }}"
-      - run: git config --global user.email "${{ vars.KOKUWA_IO_BOT_EMAIL }}"
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GIT_ACTION_TOKEN }}
-      - uses: crazy-max/ghaction-import-gpg@v6
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@main
+      - uses: actions/setup-java@main
         with:
           distribution: temurin
           java-version: 17
           cache: maven
-          server-id: sonatype-nexus
-          server-username: SERVER_USERNAME
-          server-password: SERVER_PASSWORD
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: GPG_PASSPHRASE
-      - run: mvn $MAVEN_ARGS deploy
-        env:
-          SERVER_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
-          SERVER_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
+      - run: mvn verify
+
+  versions:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - 22.0.5
+          - 23.0.7
+          - 24.0.5
+          - 25.0.6
+          - 26.2.5
+    steps:
+      - uses: actions/checkout@main
+      - uses: actions/setup-java@main
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven
+      - run: mvn verify -Dversion.org.keycloak.test=${{ matrix.version }}

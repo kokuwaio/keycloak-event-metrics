@@ -1,0 +1,61 @@
+when:
+  instance: ci.kokuwa.io
+  repo: keycloak/keycloak-event-metrics
+  event: deployment
+  branch: main
+
+steps:
+
+  maven:
+    image: maven:3.9.10-eclipse-temurin-17
+    commands:
+      # setup git with ssk key signing
+      - git config user.email "$GIT_USER_EMAIL"
+      - git config user.name "$GIT_USER_NAME"
+      - git config commit.gpgsign true
+      - git config gpg.format ssh
+      - git config user.signingkey /run/secrets/sign.pub
+      - install -m 400 /dev/null /run/secrets/sign && echo "$GIT_SIGN_KEY" > /run/secrets/sign
+      - install -m 444 /dev/null /run/secrets/sign.pub && echo "$GIT_SIGN_PUB" > /run/secrets/sign.pub
+      # release & write version to env file for image
+      - mvn release:prepare release:perform
+      - echo "VERSION=$(mvn help:evaluate --quiet --file=target/checkout/pom.xml -Dexpression=project.version -DforceStdout)" > maven.env
+    environment:
+      MAVEN_ARGS: --batch-mode --color=always --no-transfer-progress --settings=.woodpecker/maven/settings.xml
+      MAVEN_GPG_KEY: {from_secret: woodpecker_gpg_key}
+      GIT_SIGN_KEY: {from_secret: woodpecker_sign_key}
+      GIT_SIGN_PUB: {from_secret: woodpecker_sign_pub}
+      FORGEJO_USERNAME: {from_secret: woodpecker_username}
+      FORGEJO_PASSWORD: {from_secret: woodpecker_password}
+      SONATYPE_ORG_USERNAME: {from_secret: sonatype_org_username}
+      SONATYPE_ORG_PASSWORD: {from_secret: sonatype_org_password}
+
+  image:
+    image: kokuwaio/buildctl
+    settings:
+      env-file: maven.env
+      name:
+        - docker.io/kokuwaio/keycloak-event-metrics:latest
+        - docker.io/kokuwaio/keycloak-event-metrics:$VERSION
+        - ghcr.io/kokuwaio/keycloak-event-metrics:latest
+        - ghcr.io/kokuwaio/keycloak-event-metrics:$VERSION
+      build-args: {MAVEN_MIRROR_CENTRAL: "${MAVEN_MIRROR_CENTRAL}"}
+      platform: [linux/amd64, linux/arm64]
+      auth:
+        "https://index.docker.io/v1/":
+          username: {from_secret: docker_io_username}
+          password: {from_secret: docker_io_password}
+        ghcr.io:
+          username: {from_secret: ghcr_io_username}
+          password: {from_secret: ghcr_io_password}
+      annotation:
+        org.opencontainers.image.title: Keycloak Metrics
+        org.opencontainers.image.description: Provides metrics for Keycloak user/admin events and user/client/session count.
+        org.opencontainers.image.url: $CI_REPO_URL
+        org.opencontainers.image.documentation: $CI_REPO_URL/README.md
+        org.opencontainers.image.source: $CI_REPO_CLONE_URL
+        org.opencontainers.image.revision: $CI_COMMIT_SHA
+        org.opencontainers.image.vendor: kokuwa.io
+        org.opencontainers.image.licenses: EUPL-1.2
+        org.opencontainers.image.ref.name: kokuwaio/keycloak-event-metrics
+        org.opencontainers.image.version: $VERSION

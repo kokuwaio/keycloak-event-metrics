@@ -1,0 +1,26 @@
+when:
+  event: [manual, pull_request, push]
+  branch: main
+  path: [.woodpecker/lint.yaml, renovate.json, Dockerfile, "**/*.y*ml", "**/*.md"]
+
+steps:
+
+  renovate:
+    image: kokuwaio/renovate-config-validator
+    depends_on: []
+    when: [path: [.woodpecker/lint.yaml, renovate.json]]
+
+  yaml:
+    image: kokuwaio/yamllint
+    depends_on: []
+    when: [path: [.woodpecker/lint.yaml, .yamllint.yaml, "**/*.y*ml"]]
+
+  markdown:
+    image: kokuwaio/markdownlint
+    depends_on: []
+    when: [path: [.woodpecker/lint.yaml, .markdownlint.yaml, "**/*.md"]]
+
+  dockerfile:
+    image: kokuwaio/hadolint
+    depends_on: []
+    when: [path: [.woodpecker/lint.yaml, Dockerfile]]

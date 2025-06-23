@@ -1,0 +1,24 @@
+when:
+  event: [manual, pull_request]
+  path: [.woodpecker/verify.yaml, pom.xml, src/**]
+
+services:
+  - name: dockerd
+    image: kokuwaio/dockerd
+    privileged: true
+    ports: [2375, 8080]
+
+steps:
+
+  test:
+    image: maven:3.9.10-eclipse-temurin-17
+    commands: mvn verify -P-deploy
+    environment:
+      MAVEN_ARGS: --batch-mode --color=always --no-transfer-progress --settings=.woodpecker/maven/settings.xml
+
+  image:
+    image: kokuwaio/buildctl
+    settings:
+      platform: [linux/amd64, linux/arm64]
+    when:
+      instance: ci.kokuwa.io

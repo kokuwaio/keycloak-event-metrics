@@ -1,10 +1,15 @@
 # Keycloak Metrics
 
-Provides metrics for Keycloak user/admin events and user/client/session count. Tested on Keycloak [22-26](.github/workflows/pr.yaml#L48-L53).
+Provides metrics for Keycloak user/admin events and user/client/session count. Tested on Keycloak [22-26](.woodpecker/verify.yaml#L7-L11).
 
-[![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/kokuwaio/keycloak-event-metrics.svg?label=License)](http://www.apache.org/licenses/)
 [![Maven Central](https://img.shields.io/maven-central/v/io.kokuwa.keycloak/keycloak-event-metrics.svg?label=Maven%20Central)](https://central.sonatype.com/search?namespace=io.kokuwa.keycloak&q=keycloak-event-metrics)
-[![Build](https://img.shields.io/github/actions/workflow/status/kokuwaio/keycloak-event-metrics/build.yaml?label=Build)](https://github.com/kokuwaio/keycloak-event-metrics/actions/workflows/build.yaml)
+[![pulls](https://img.shields.io/docker/pulls/kokuwaio/keycloak-event-metrics)](https://hub.docker.com/r/kokuwaio/keycloak-event-metrics)
+[![size](https://img.shields.io/docker/image-size/kokuwaio/keycloak-event-metrics)](https://hub.docker.com/r/kokuwaio/keycloak-event-metrics)
+[![dockerfile](https://img.shields.io/badge/source-Dockerfile%20-blue)](https://git.kokuwa.io/keycloak/keycloak-event-metrics/src/branch/main/Dockerfile)
+[![license](https://img.shields.io/badge/License-EUPL%201.2-blue)](https://git.kokuwa.io/keycloak/keycloak-event-metrics/src/branch/main/LICENSE)
+[![prs](https://img.shields.io/gitea/pull-requests/open/keycloak/keycloak-event-metrics?gitea_url=https%3A%2F%2Fgit.kokuwa.io)](https://git.kokuwa.io/keycloak/keycloak-event-metrics/pulls)
+[![issues](https://img.shields.io/gitea/issues/open/keycloak/keycloak-event-metrics?gitea_url=https%3A%2F%2Fgit.kokuwa.io)](https://git.kokuwa.io/keycloak/keycloak-event-metrics/issues)
+[![build](https://ci.kokuwa.io/api/badges/keycloak/keycloak-event-metrics/status.svg)](https://ci.kokuwa.io/repos/keycloak/keycloak-event-metrics/)
 
 ## Why?
 
@@ -114,7 +119,7 @@ If scrapping takes less than `KC_METRICS_STATS_INFO_THRESHOLD` duration will be 
 
 ### Grafana Dashboard
 
-Can be found here: [kokuwaio/keycloak keycloak-metrics.json](https://github.com/kokuwaio/keycloak/blob/main/src/test/k3s/dev/grafana/files/dashboards/keycloak-metrics.json)
+Can be found here: [keycloak-metrics.json](https://git.kokuwa.io/keycloak/keycloak/blob/main/src/test/k3s/dev/grafana/files/dashboards/keycloak-metrics.json)
 
 ### Testcontainers
 
@@ -131,7 +136,7 @@ This images are based on busybox, so you can use cp to copy the jar into your ke
 
 ### Docker
 
-Check: [kokuwaio/keycloak](https://github.com/kokuwaio/keycloak)
+Check: [kowaio/keycloak](https://git.kokuwa.io/keycloak/keycloak)
 
 Dockerfile:
 
@@ -145,7 +150,7 @@ FROM debian:stable-slim AS metrics
 RUN apt-get -qq update
 RUN apt-get -qq install --yes --no-install-recommends ca-certificates wget
 
-ARG METRICS_VERSION=1.0.0
+ARG METRICS_VERSION=2.0.0
 ARG METRICS_FILE=keycloak-event-metrics-${METRICS_VERSION}.jar
 ARG METRICS_URL=https://repo1.maven.org/maven2/io/kokuwa/keycloak/keycloak-event-metrics/${METRICS_VERSION}
 
@@ -159,7 +164,7 @@ RUN mv ${METRICS_FILE} /opt/keycloak/providers
 ### build keycloak with metrics
 ###
 
-FROM quay.io/keycloak/keycloak:25.0.1
+FROM quay.io/keycloak/keycloak:25.2.5
 
 ENV KEYCLOAK_ADMIN=admin
 ENV KEYCLOAK_ADMIN_PASSWORD=password

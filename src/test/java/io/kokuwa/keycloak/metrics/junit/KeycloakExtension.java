@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.token.TokenService;
+import org.testcontainers.containers.FixedHostPortGenericContainer;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.MountableFile;
@@ -45,30 +46,33 @@ public class KeycloakExtension implements BeforeAllCallback, ParameterResolver {
 			throw new Exception("Failed to read properties", e);
 		}
 		var version = properties.getProperty("version");
+		var image = "quay.io/keycloak/keycloak:" + version;
 		var jar = properties.getProperty("jar");
 		var timeout = properties.getProperty("timeout");
 
-		// create and start container
+		// create and start container - use fixed port in ci
 
-		@SuppressWarnings("resource")
-		var container = new GenericContainer<>("quay.io/keycloak/keycloak:" + version)
-				.withEnv("KEYCLOAK_ADMIN", "admin")
-				.withEnv("KEYCLOAK_ADMIN_PASSWORD", "password")
-				.withEnv("KC_LOG_LEVEL", "io.kokuwa:trace")
-				// otherwise port 9000 will be used, with this config we can test different keycloak versions
-				.withEnv("KC_LEGACY_OBSERVABILITY_INTERFACE", "true")
-				.withEnv("KC_HEALTH_ENABLED", "true")
-				.withEnv("KC_METRICS_ENABLED", "true")
-				.withEnv("KC_METRICS_STATS_ENABLED", "true")
-				.withEnv("KC_METRICS_STATS_INTERVAL", "PT1s")
-				.withCopyFileToContainer(MountableFile.forHostPath(jar), "/opt/keycloak/providers/metrics.jar")
-				.withLogConsumer(out -> System.out.print(out.getUtf8String()))
-				.withExposedPorts(8080)
-				.withStartupTimeout(Duration.parse(timeout))
-				.waitingFor(Wait.forHttp("/health").forPort(8080))
-				.withCommand("start-dev");
+		@SuppressWarnings({ "resource", "deprecation" })
+		var container = (System.getenv("CI") == null
+				? new GenericContainer<>(image).withExposedPorts(8080)
+				: new FixedHostPortGenericContainer<>(image).withFixedExposedPort(8080, 8080));
 		try {
-			container.start();
+			container
+					.withEnv("KEYCLOAK_ADMIN", "admin")
+					.withEnv("KEYCLOAK_ADMIN_PASSWORD", "password")
+					.withEnv("KC_LOG_LEVEL", "io.kokuwa:trace")
+					// otherwise port 9000 will be used, with this config we can test different keycloak versions
+					.withEnv("KC_LEGACY_OBSERVABILITY_INTERFACE", "true")
+					.withEnv("KC_HEALTH_ENABLED", "true")
+					.withEnv("KC_METRICS_ENABLED", "true")
+					.withEnv("KC_METRICS_STATS_ENABLED", "true")
+					.withEnv("KC_METRICS_STATS_INTERVAL", "PT1s")
+					.withCopyFileToContainer(MountableFile.forHostPath(jar), "/opt/keycloak/providers/metrics.jar")
+					.withLogConsumer(out -> System.out.print(out.getUtf8String()))
+					.withStartupTimeout(Duration.parse(timeout))
+					.waitingFor(Wait.forHttp("/health").forPort(8080).withStartupTimeout(Duration.ofMinutes(10)))
+					.withCommand("start-dev")
+					.start();
 		} catch (RuntimeException e) {
 			throw new Exception("Failed to start keycloak", e);
 		}

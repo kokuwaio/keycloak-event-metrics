@@ -4,11 +4,11 @@
 
 	<groupId>io.kokuwa.keycloak</groupId>
 	<artifactId>keycloak-event-metrics</artifactId>
-	<version>1.1.2-SNAPSHOT</version>
+	<version>2.0.0-SNAPSHOT</version>
 
 	<name>Keycloak Metrics</name>
 	<description>Provides metrics for Keycloak user/admin events</description>
-	<url>https://github.com/kokuwaio/keycloak-event-metrics</url>
+	<url>https://git.kokuwa.io/keycloak/keycloak-event-metrics</url>
 	<inceptionYear>2023</inceptionYear>
 	<organization>
 		<name>Kokuwa.io</name>
@@ -16,8 +16,8 @@
 	</organization>
 	<licenses>
 		<license>
-			<name>Apache-2.0</name>
-			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<name>EUPL-1.2</name>
+			<url>https://eupl.eu/1.2/en</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -33,27 +33,23 @@
 	</developers>
 
 	<scm>
-		<url>https://github.com/kokuwaio/keycloak-event-metrics</url>
-		<connection>scm:git:https://github.com/kokuwaio/keycloak-event-metrics.git</connection>
-		<developerConnection>scm:git:https://github.com/kokuwaio/keycloak-event-metrics.git</developerConnection>
+		<url>https://git.kokuwa.io/keycloak/keycloak-event-metrics</url>
+		<connection>scm:git:https://git.kokuwa.io/keycloak/keycloak-event-metrics.git</connection>
+		<developerConnection>scm:git:https://git.kokuwa.io/keycloak/keycloak-event-metrics.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 	<issueManagement>
-		<system>github</system>
-		<url>https://github.com/kokuwaio/keycloak-event-metrics/issues</url>
+		<system>forgejo</system>
+		<url>https://git.kokuwa.io/keycloak/keycloak-event-metrics/issues</url>
 	</issueManagement>
 	<ciManagement>
-		<system>github</system>
-		<url>https://github.com/kokuwaio/keycloak-event-metrics/actions</url>
+		<system>woodpecker</system>
+		<url>https://ci.kokuwa.io/repos/keycloak/keycloak-event-metrics</url>
 	</ciManagement>
 	<distributionManagement>
-		<repository>
-			<id>sonatype-nexus</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
 		<snapshotRepository>
-			<id>sonatype-nexus</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+			<id>sonatype.org</id>
+			<url>https://central.sonatype.com/repository/maven-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
@@ -83,28 +79,8 @@
 		<!-- ============================= Versions ============================== -->
 		<!-- ===================================================================== -->
 
-		<version.org.apache.maven.plugins.clean>3.4.1</version.org.apache.maven.plugins.clean>
-		<version.org.apache.maven.plugins.compiler>3.14.0</version.org.apache.maven.plugins.compiler>
-		<version.org.apache.maven.plugins.deploy>3.1.4</version.org.apache.maven.plugins.deploy>
-		<version.org.apache.maven.plugins.gpg>3.2.7</version.org.apache.maven.plugins.gpg>
-		<version.org.apache.maven.plugins.install>3.1.4</version.org.apache.maven.plugins.install>
-		<version.org.apache.maven.plugins.jar>3.4.2</version.org.apache.maven.plugins.jar>
-		<version.org.apache.maven.plugins.javadoc>3.11.2</version.org.apache.maven.plugins.javadoc>
-		<version.org.apache.maven.plugins.release>3.1.1</version.org.apache.maven.plugins.release>
-		<version.org.apache.maven.plugins.resources>3.3.1</version.org.apache.maven.plugins.resources>
-		<version.org.apache.maven.plugins.site>3.21.0</version.org.apache.maven.plugins.site>
-		<version.org.apache.maven.plugins.source>3.3.1</version.org.apache.maven.plugins.source>
-		<version.org.apache.maven.plugins.surefire>3.5.3</version.org.apache.maven.plugins.surefire>
-		<version.org.codehaus.mojo.tidy>1.4.0</version.org.codehaus.mojo.tidy>
-		<version.org.codehaus.mojo.versions>2.18.0</version.org.codehaus.mojo.versions>
-		<version.org.sonatype.plugins.nexus>1.7.0</version.org.sonatype.plugins.nexus>
-		<version.net.revelc.code.formatter>2.26.0</version.net.revelc.code.formatter>
-		<version.net.revelc.code.impsort>1.12.0</version.net.revelc.code.impsort>
-		<version.io.fabric8.docker>0.46.0</version.io.fabric8.docker>
-
 		<version.org.keycloak>26.2.5</version.org.keycloak>
 		<version.org.keycloak.test>${version.org.keycloak}</version.org.keycloak.test>
-		<version.org.testcontainers>1.18.3</version.org.testcontainers>
 
 	</properties>
 
@@ -152,6 +128,15 @@
 				<exclusion>
 					<groupId>org.jboss.resteasy</groupId>
 					<artifactId>resteasy-multipart-provider</artifactId>
+				</exclusion>
+				<!-- The POM for ... is invalid -->
+				<exclusion>
+					<groupId>com.sun.istack</groupId>
+					<artifactId>istack-commons-tools</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.istack</groupId>
+					<artifactId>istack-commons-runtime</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -219,6 +204,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>${project.artifactId}</finalName>
 		<testResources>
 			<testResource>
 				<directory>${project.basedir}/src/test/resources</directory>
@@ -229,13 +215,8 @@
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-clean-plugin</artifactId>
-					<version>${version.org.apache.maven.plugins.clean}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>${version.org.apache.maven.plugins.compiler}</version>
+					<version>3.14.0</version>
 					<configuration>
 						<compilerArgument>${maven.compiler.compilerArgument}</compilerArgument>
 					</configuration>
@@ -243,41 +224,41 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-deploy-plugin</artifactId>
-					<version>${version.org.apache.maven.plugins.deploy}</version>
+					<version>3.1.4</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-failsafe-plugin</artifactId>
-					<version>${version.org.apache.maven.plugins.surefire}</version>
+					<version>3.5.3</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-gpg-plugin</artifactId>
-					<version>${version.org.apache.maven.plugins.gpg}</version>
+					<version>3.2.7</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-install-plugin</artifactId>
-					<version>${version.org.apache.maven.plugins.install}</version>
+					<version>3.1.4</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>${version.org.apache.maven.plugins.jar}</version>
+					<version>3.4.2</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>${version.org.apache.maven.plugins.javadoc}</version>
+					<version>3.11.2</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
-					<version>${version.org.apache.maven.plugins.release}</version>
+					<version>3.1.1</version>
 					<configuration>
-						<preparationGoals>clean verify</preparationGoals>
+						<preparationGoals>test</preparationGoals>
 						<preparationProfiles>check</preparationProfiles>
-						<goals>deploy</goals>
+						<goals>deploy -DskipITs</goals>
 						<releaseProfiles>deploy,release</releaseProfiles>
 						<signTag>true</signTag>
 						<scmReleaseCommitComment>@{prefix} prepare release @{releaseLabel} [CI SKIP]</scmReleaseCommitComment>
@@ -287,7 +268,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
-					<version>${version.org.apache.maven.plugins.resources}</version>
+					<version>3.3.1</version>
 					<configuration>
 						<propertiesEncoding>${project.build.propertiesEncoding}</propertiesEncoding>
 					</configuration>
@@ -295,43 +276,32 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>${version.org.apache.maven.plugins.site}</version>
+					<version>3.21.0</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
-					<version>${version.org.apache.maven.plugins.source}</version>
+					<version>3.3.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>${version.org.apache.maven.plugins.surefire}</version>
+					<version>3.5.3</version>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>tidy-maven-plugin</artifactId>
-					<version>${version.org.codehaus.mojo.tidy}</version>
+					<version>1.4.0</version>
 				</plugin>
 				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>versions-maven-plugin</artifactId>
-					<version>${version.org.codehaus.mojo.versions}</version>
-					<configuration>
-						<generateBackupPoms>false</generateBackupPoms>
-						<ignoredVersions>
-							<ignoredVersion>^.*-(alpha|beta|M)-?[0-9]+$</ignoredVersion>
-						</ignoredVersions>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.sonatype.plugins</groupId>
-					<artifactId>nexus-staging-maven-plugin</artifactId>
-					<version>${version.org.sonatype.plugins.nexus}</version>
+					<groupId>org.sonatype.central</groupId>
+					<artifactId>central-publishing-maven-plugin</artifactId>
+					<version>0.8.0</version>
 				</plugin>
 				<plugin>
 					<groupId>net.revelc.code.formatter</groupId>
 					<artifactId>formatter-maven-plugin</artifactId>
-					<version>${version.net.revelc.code.formatter}</version>
+					<version>2.26.0</version>
 					<configuration>
 						<configFile>${formatter.configFile}</configFile>
 					</configuration>
@@ -339,12 +309,7 @@
 				<plugin>
 					<groupId>net.revelc.code</groupId>
 					<artifactId>impsort-maven-plugin</artifactId>
-					<version>${version.net.revelc.code.impsort}</version>
-				</plugin>
-				<plugin>
-					<groupId>io.fabric8</groupId>
-					<artifactId>docker-maven-plugin</artifactId>
-					<version>${version.io.fabric8.docker}</version>
+					<version>1.12.0</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -496,7 +461,7 @@
 						<executions>
 							<execution>
 								<goals>
-									<goal>jar-no-fork</goal>
+									<goal>jar</goal>
 								</goals>
 							</execution>
 						</executions>
@@ -507,108 +472,11 @@
 						<executions>
 							<execution>
 								<goals>
-									<goal>javadoc-no-fork</goal>
+									<goal>jar</goal>
 								</goals>
 							</execution>
 						</executions>
 					</plugin>
-
-					<!-- docker image -->
-					<plugin>
-						<groupId>io.fabric8</groupId>
-						<artifactId>docker-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>build</id>
-								<phase>install</phase>
-								<goals>
-									<goal>build</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>push</id>
-								<phase>deploy</phase>
-								<goals>
-									<goal>push</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<verbose>build</verbose>
-							<images>
-								<image>
-									<name>docker.io/kokuwaio/keycloak-event-metrics:${project.version}</name>
-									<build>
-										<from>docker.io/library/busybox:1.37.0-uclibc@sha256:cc57e0ff4b6d3138931ff5c7180d18078813300e2508a25fb767a4d36df30d4d</from>
-										<assembly>
-											<basedir>${file.separator}</basedir>
-											<inline>
-												<files>
-													<file>
-														<source>${project.build.directory}/${project.build.finalName}.jar</source>
-														<destName>${project.artifactId}.jar</destName>
-														<fileMode>444</fileMode>
-													</file>
-												</files>
-											</inline>
-										</assembly>
-										<labels>
-											<!-- https://github.com/opencontainers/image-spec/blob/main/annotations.md -->
-											<org.opencontainers.image.title>${project.name}</org.opencontainers.image.title>
-											<org.opencontainers.image.description>${project.description}</org.opencontainers.image.description>
-											<org.opencontainers.image.url>${project.url}</org.opencontainers.image.url>
-											<org.opencontainers.image.source>${project.scm.url}</org.opencontainers.image.source>
-											<org.opencontainers.image.vendor>${project.organization.name}</org.opencontainers.image.vendor>
-											<org.opencontainers.image.authors>https://github.com/orgs/kokuwaio/people</org.opencontainers.image.authors>
-											<org.opencontainers.image.licenses>${project.licenses[0].name}</org.opencontainers.image.licenses>
-											<org.opencontainers.image.version>${project.version}</org.opencontainers.image.version>
-											<org.opencontainers.image.base.name>docker.io/library/busybox:1.37.0-uclibc</org.opencontainers.image.base.name>
-											<org.opencontainers.image.base.digest>sha256:cc57e0ff4b6d3138931ff5c7180d18078813300e2508a25fb767a4d36df30d4d</org.opencontainers.image.base.digest>
-										</labels>
-									</build>
-								</image>
-								<image>
-									<name>ghcr.io/kokuwaio/keycloak-event-metrics:${project.version}</name>
-									<build>
-										<from>docker.io/library/busybox:1.37.0-uclibc@sha256:cc57e0ff4b6d3138931ff5c7180d18078813300e2508a25fb767a4d36df30d4d</from>
-										<assembly>
-											<basedir>${file.separator}</basedir>
-											<inline>
-												<files>
-													<file>
-														<source>${project.build.directory}/${project.build.finalName}.jar</source>
-														<destName>${project.artifactId}.jar</destName>
-														<fileMode>444</fileMode>
-													</file>
-												</files>
-											</inline>
-										</assembly>
-										<labels>
-											<!-- https://github.com/opencontainers/image-spec/blob/main/annotations.md -->
-											<org.opencontainers.image.title>${project.name}</org.opencontainers.image.title>
-											<org.opencontainers.image.description>${project.description}</org.opencontainers.image.description>
-											<org.opencontainers.image.url>${project.url}</org.opencontainers.image.url>
-											<org.opencontainers.image.source>${project.scm.url}</org.opencontainers.image.source>
-											<org.opencontainers.image.vendor>${project.organization.name}</org.opencontainers.image.vendor>
-											<org.opencontainers.image.authors>https://github.com/orgs/kokuwaio/people</org.opencontainers.image.authors>
-											<org.opencontainers.image.licenses>${project.licenses[0].name}</org.opencontainers.image.licenses>
-											<org.opencontainers.image.version>${project.version}</org.opencontainers.image.version>
-											<org.opencontainers.image.base.name>docker.io/library/busybox:1.37.0-uclibc</org.opencontainers.image.base.name>
-											<org.opencontainers.image.base.digest>sha256:cc57e0ff4b6d3138931ff5c7180d18078813300e2508a25fb767a4d36df30d4d</org.opencontainers.image.base.digest>
-										</labels>
-									</build>
-								</image>
-							</images>
-						</configuration>
-					</plugin>
-
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>release</id>
-			<build>
-				<plugins>
 
 					<!-- sign before upload -->
 					<plugin>
@@ -619,22 +487,31 @@
 								<goals>
 									<goal>sign</goal>
 								</goals>
+								<configuration>
+									<signer>bc</signer>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
 
-					<!-- autoclose sonatype nexus repo -->
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
 					<plugin>
-						<groupId>org.sonatype.plugins</groupId>
-						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<groupId>org.sonatype.central</groupId>
+						<artifactId>central-publishing-maven-plugin</artifactId>
 						<extensions>true</extensions>
 						<configuration>
-							<serverId>sonatype-nexus</serverId>
-							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+							<skipPublishing>true</skipPublishing>
+							<publishingServerId>sonatype.org</publishingServerId>
+							<autoPublish>true</autoPublish>
+							<waitUntil>published</waitUntil>
 						</configuration>
 					</plugin>
-
 				</plugins>
 			</build>
 		</profile>
