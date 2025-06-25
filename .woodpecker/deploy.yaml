@@ -1,6 +1,6 @@
 when:
   instance: ci.kokuwa.io
-  repo: keycloak/keycloak-event-metrics
+  repo: kokuwaio/keycloak-event-metrics
   event: [manual, push]
   branch: main
   path: [.woodpecker/deploy.yaml, Dockerfile, pom.xml, src/main/**]

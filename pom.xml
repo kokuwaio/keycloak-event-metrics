@@ -506,7 +506,6 @@
 						<artifactId>central-publishing-maven-plugin</artifactId>
 						<extensions>true</extensions>
 						<configuration>
-							<skipPublishing>true</skipPublishing>
 							<publishingServerId>sonatype.org</publishingServerId>
 							<autoPublish>true</autoPublish>
 							<waitUntil>published</waitUntil>
