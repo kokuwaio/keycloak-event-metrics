@@ -8,7 +8,7 @@
 
 	<name>Keycloak Metrics</name>
 	<description>Provides metrics for Keycloak user/admin events</description>
-	<url>https://git.kokuwa.io/keycloak/keycloak-event-metrics</url>
+	<url>https://git.kokuwa.io/kokuwaio/keycloak-event-metrics</url>
 	<inceptionYear>2023</inceptionYear>
 	<organization>
 		<name>Kokuwa.io</name>
@@ -33,18 +33,18 @@
 	</developers>
 
 	<scm>
-		<url>https://git.kokuwa.io/keycloak/keycloak-event-metrics</url>
-		<connection>scm:git:https://git.kokuwa.io/keycloak/keycloak-event-metrics.git</connection>
-		<developerConnection>scm:git:https://git.kokuwa.io/keycloak/keycloak-event-metrics.git</developerConnection>
+		<url>https://git.kokuwa.io/kokuwaio/keycloak-event-metrics</url>
+		<connection>scm:git:https://git.kokuwa.io/kokuwaio/keycloak-event-metrics.git</connection>
+		<developerConnection>scm:git:https://git.kokuwa.io/kokuwaio/keycloak-event-metrics.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 	<issueManagement>
 		<system>forgejo</system>
-		<url>https://git.kokuwa.io/keycloak/keycloak-event-metrics/issues</url>
+		<url>https://git.kokuwa.io/kokuwaio/keycloak-event-metrics/issues</url>
 	</issueManagement>
 	<ciManagement>
 		<system>woodpecker</system>
-		<url>https://ci.kokuwa.io/repos/keycloak/keycloak-event-metrics</url>
+		<url>https://ci.kokuwa.io/repos/kokuwaio/keycloak-event-metrics</url>
 	</ciManagement>
 	<distributionManagement>
 		<snapshotRepository>
@@ -454,7 +454,7 @@
 			<build>
 				<plugins>
 
-					<!-- add source/javadoc for downstream projects -->
+					<!-- add source/javadoc -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
