@@ -13,7 +13,3 @@ rules:
   quoted-strings:
     quote-type: double
     required: only-when-needed
-
-  # allow everything on keys
-  truthy:
-    check-keys: false

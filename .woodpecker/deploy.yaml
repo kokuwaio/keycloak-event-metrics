@@ -3,7 +3,7 @@ when:
   repo: kokuwaio/keycloak-event-metrics
   event: [manual, push]
   branch: main
-  path: [.woodpecker/deploy.yaml, Dockerfile, pom.xml, src/main/**]
+  path: [.woodpecker/deploy.yaml, README.md, Dockerfile, pom.xml, src/main/**]
 
 services:
   - name: dockerd
@@ -48,3 +48,14 @@ steps:
         org.opencontainers.image.licenses: EUPL-1.2
         org.opencontainers.image.ref.name: kokuwaio/keycloak-event-metrics
         org.opencontainers.image.version: snapshot
+
+  dockerhub:
+    image: kokuwaio/dockerhub-metadata
+    settings:
+      repository: kokuwaio/keycloak-event-metrics
+      description-short: Provides metrics for Keycloak user/admin events and user/client/session count.
+      categories: monitoring-and-observability
+      username: {from_secret: dockerhub_username}
+      password: {from_secret: dockerhub_password}
+    when:
+      path: [README.md]
