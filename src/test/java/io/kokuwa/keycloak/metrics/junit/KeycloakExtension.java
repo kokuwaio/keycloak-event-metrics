@@ -52,7 +52,7 @@ public class KeycloakExtension implements BeforeAllCallback, ParameterResolver {
 
 		// create and start container - use fixed port in ci
 
-		@SuppressWarnings({ "resource", "deprecation" })
+		@SuppressWarnings("deprecation")
 		var container = (System.getenv("CI") == null
 				? new GenericContainer<>(image).withExposedPorts(8080)
 				: new FixedHostPortGenericContainer<>(image).withFixedExposedPort(8080, 8080));

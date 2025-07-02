@@ -9,6 +9,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -39,15 +40,15 @@ public class KeycloakClient {
 	private final TokenService tokenService;
 
 	private final ObjectMapper mapper = new ObjectMapper();
-	private final HttpClient client = HttpClient.newHttpClient();
+	private final HttpClient httpClient = HttpClient.newHttpClient();
 	private final String url;
-	private final String adminToken;
+	private String adminToken;
+	private Instant adminTokenExpires;
 
 	KeycloakClient(String url, Keycloak keycloak, TokenService tokenService) {
 		this.keycloak = keycloak;
 		this.tokenService = tokenService;
 		this.url = url;
-		this.adminToken = login("admin-cli", "master", "admin", "password").getToken();
 	}
 
 	public void createRealm(String realmName) {
@@ -71,10 +72,10 @@ public class KeycloakClient {
 
 	public void createUser(String realmName, String username, String password) {
 		try {
-			var response = client.send(HttpRequest.newBuilder()
+			var response = httpClient.send(HttpRequest.newBuilder()
 					.uri(URI.create(url + "/admin/realms/" + realmName + "/users"))
 					.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-					.header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+					.header(HttpHeaders.AUTHORIZATION, "Bearer " + token())
 					.POST(BodyPublishers.ofString(mapper.writeValueAsString(Map.of(
 							"enabled", true,
 							"emailVerified", true,
@@ -106,5 +107,14 @@ public class KeycloakClient {
 				OAuth2Constants.GRANT_TYPE, OAuth2Constants.PASSWORD,
 				OAuth2Constants.USERNAME, username,
 				OAuth2Constants.PASSWORD, password)));
+	}
+
+	private String token() {
+		if (adminToken == null || Instant.now().isAfter(adminTokenExpires)) {
+			var response = login("admin-cli", "master", "admin", "password");
+			this.adminToken = response.getToken();
+			this.adminTokenExpires = Instant.now().plusSeconds(response.getExpiresIn() - 30);
+		}
+		return this.adminToken;
 	}
 }
