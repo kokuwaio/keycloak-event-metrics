@@ -1,5 +1,4 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"extends": ["local>kokuwaio/renovate-config", ":reviewer(stephan.schnabel)"],
-	"pinDigests": false
+	"extends": ["kokuwaio/renovate-config"]
 }

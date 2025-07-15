@@ -1,10 +1,11 @@
 when:
+  instance: ci.kokuwa.io
   event: [manual, pull_request]
   path: [.woodpecker/verify.yaml, pom.xml, src/**]
 
 services:
   - name: dockerd
-    image: kokuwaio/dockerd
+    image: kokuwaio/dockerd:28.2.2-rootless
     privileged: true
     ports: [2375, 8080]
 
@@ -17,7 +18,7 @@ steps:
       MAVEN_ARGS: --batch-mode --color=always --no-transfer-progress --settings=.woodpecker/maven/settings.xml
 
   image:
-    image: kokuwaio/buildctl
+    image: kokuwaio/buildctl:v0.23.2
     settings:
       platform: [linux/amd64, linux/arm64]
     when:

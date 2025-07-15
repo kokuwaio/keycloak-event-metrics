@@ -1,4 +1,5 @@
 when:
+  instance: ci.kokuwa.io
   event: [manual, pull_request]
   path: [.woodpecker/versions.yaml, pom.xml, src/**]
 
@@ -9,11 +10,11 @@ matrix:
     - 23.0.7
     - 24.0.5
     - 25.0.6
-    - 26.2.5
+    - 26.3.1
 
 services:
   - name: dockerd
-    image: kokuwaio/dockerd
+    image: kokuwaio/dockerd:28.2.2-rootless
     privileged: true
     ports: [2375, 8080]
 

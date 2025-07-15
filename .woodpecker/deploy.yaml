@@ -5,9 +5,10 @@ when:
   branch: main
   path: [.woodpecker/deploy.yaml, README.md, Dockerfile, pom.xml, src/main/**]
 
+
 services:
   - name: dockerd
-    image: kokuwaio/dockerd
+    image: kokuwaio/dockerd:28.2.2-rootless
     privileged: true
     ports: [2375, 8080]
 
@@ -23,7 +24,7 @@ steps:
       SONATYPE_ORG_PASSWORD: {from_secret: sonatype_org_password}
 
   image:
-    image: kokuwaio/buildctl
+    image: kokuwaio/buildctl:v0.23.2
     settings:
       name:
         - docker.io/kokuwaio/keycloak-event-metrics:snapshot
