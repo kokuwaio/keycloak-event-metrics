@@ -446,11 +446,6 @@
 		</profile>
 		<profile>
 			<id>deploy</id>
-			<activation>
-				<property>
-					<name>env.CI</name>
-				</property>
-			</activation>
 			<build>
 				<plugins>
 

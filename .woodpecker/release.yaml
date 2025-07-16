@@ -18,10 +18,9 @@ steps:
       - install -m 400 /dev/null /run/secrets/sign && echo "$GIT_SIGN_KEY" > /run/secrets/sign
       - install -m 444 /dev/null /run/secrets/sign.pub && echo "$GIT_SIGN_PUB" > /run/secrets/sign.pub
       # release & write version to env file for image
-      - mvn release:prepare release:perform
+      - mvn release:prepare release:perform --settings=.woodpecker/maven/settings.xml
       - echo "VERSION=$(mvn help:evaluate --quiet --file=target/checkout/pom.xml -Dexpression=project.version -DforceStdout)" > maven.env
     environment:
-      MAVEN_ARGS: --batch-mode --color=always --no-transfer-progress --settings=.woodpecker/maven/settings.xml
       MAVEN_GPG_KEY: {from_secret: woodpecker_gpg_key}
       GIT_SIGN_KEY: {from_secret: woodpecker_sign_key}
       GIT_SIGN_PUB: {from_secret: woodpecker_sign_pub}

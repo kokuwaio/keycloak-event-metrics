@@ -16,9 +16,8 @@ steps:
 
   maven:
     image: maven:3.9.10-eclipse-temurin-17
-    commands: mvn deploy
+    commands: mvn deploy -Pdeploy --settings=.woodpecker/maven/settings.xml
     environment:
-      MAVEN_ARGS: --batch-mode --color=always --no-transfer-progress --settings=.woodpecker/maven/settings.xml
       MAVEN_GPG_KEY: {from_secret: woodpecker_gpg_key}
       SONATYPE_ORG_USERNAME: {from_secret: sonatype_org_username}
       SONATYPE_ORG_PASSWORD: {from_secret: sonatype_org_password}

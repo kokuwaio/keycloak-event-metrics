@@ -22,6 +22,4 @@ steps:
 
   test:
     image: maven:3.9.10-eclipse-temurin-17
-    commands: mvn verify -Dversion.org.keycloak.test="$KEYCLOAK_VERSION" -P-deploy,-check
-    environment:
-      MAVEN_ARGS: --batch-mode --color=always --no-transfer-progress --settings=.woodpecker/maven/settings.xml
+    commands: mvn verify -Dversion.org.keycloak.test="$KEYCLOAK_VERSION" -P-check --settings=.woodpecker/maven/settings.xml
