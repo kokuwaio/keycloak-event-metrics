@@ -12,7 +12,7 @@ services:
 steps:
 
   test:
-    image: maven:3.9.10-eclipse-temurin-17
+    image: maven:3.9.11-eclipse-temurin-17
     commands: mvn verify --settings=.woodpecker/maven/settings.xml
 
   image:

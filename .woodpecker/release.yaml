@@ -7,7 +7,7 @@ when:
 steps:
 
   maven:
-    image: maven:3.9.10-eclipse-temurin-17
+    image: maven:3.9.11-eclipse-temurin-17
     commands:
       # setup git with ssk key signing
       - git config user.email "$GIT_USER_EMAIL"

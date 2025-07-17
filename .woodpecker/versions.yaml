@@ -21,5 +21,5 @@ services:
 steps:
 
   test:
-    image: maven:3.9.10-eclipse-temurin-17
+    image: maven:3.9.11-eclipse-temurin-17
     commands: mvn verify -Dversion.org.keycloak.test="$KEYCLOAK_VERSION" -P-check --settings=.woodpecker/maven/settings.xml
