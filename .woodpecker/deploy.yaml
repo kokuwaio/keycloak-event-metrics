@@ -8,7 +8,7 @@ when:
 
 services:
   - name: dockerd
-    image: kokuwaio/dockerd:28.2.2-rootless
+    image: kokuwaio/dockerd:28.4.0-rootless
     privileged: true
     ports: [2375, 8080]
 
