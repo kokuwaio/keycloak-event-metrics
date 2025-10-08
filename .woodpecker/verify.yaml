@@ -16,7 +16,7 @@ steps:
     commands: mvn verify --settings=.woodpecker/maven/settings.xml
 
   image:
-    image: kokuwaio/buildctl:v0.25.0
+    image: kokuwaio/buildctl:v0.25.1
     settings:
       platform: [linux/amd64, linux/arm64]
     when:
