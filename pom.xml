@@ -79,7 +79,7 @@
 		<!-- ============================= Versions ============================== -->
 		<!-- ===================================================================== -->
 
-		<version.org.keycloak>26.4.0</version.org.keycloak>
+		<version.org.keycloak>26.4.1</version.org.keycloak>
 		<version.org.keycloak.test>${version.org.keycloak}</version.org.keycloak.test>
 
 	</properties>
