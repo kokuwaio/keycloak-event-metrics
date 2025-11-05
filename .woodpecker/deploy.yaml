@@ -23,7 +23,7 @@ steps:
       SONATYPE_ORG_PASSWORD: {from_secret: sonatype_org_password}
 
   image:
-    image: kokuwaio/buildctl:v0.25.1
+    image: kokuwaio/buildctl:v0.25.2
     settings:
       name:
         - docker.io/kokuwaio/keycloak-event-metrics:snapshot
