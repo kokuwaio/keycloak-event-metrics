@@ -1,4 +1,4 @@
-FROM maven:3.9.11-eclipse-temurin-17@sha256:f8063f3cc8a76efe9613b68128f979941aeb1befcf28761c1d30ccb20e72ece1 AS build
+FROM maven:3.9.11-eclipse-temurin-17@sha256:aaa8835df17b80a18a863456bc6ccd05e0ace19b92376a27ee0e6efd6bc10ec6 AS build
 SHELL ["/usr/bin/bash", "-e", "-u", "-c"]
 WORKDIR /build
 ARG MAVEN_ARGS="--batch-mode --color=always --no-transfer-progress"
