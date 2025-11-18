@@ -6,7 +6,7 @@ when:
 steps:
 
   renovate:
-    image: kokuwaio/renovate-config-validator:41
+    image: kokuwaio/renovate-config-validator:42
     depends_on: []
     when: [path: [.woodpecker/lint.yaml, renovate.json]]
 
