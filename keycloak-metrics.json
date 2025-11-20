@@ -1,0 +1,1120 @@
+{
+  "description": "Dashboard of Keycloak metrics exported with Keycloak Metrics SPI",
+  "editable": true,
+  "graphTooltip": 2,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": true,
+      "title": "Forgejo",
+      "tooltip": "Forgejo Project",
+      "type": "link",
+      "url": "https://git.kokuwa.io/kokuwaio/keycloak-event-metrics"
+    }
+  ],
+  "liveNow": true,
+  "panels": [
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${Datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byValue",
+              "options": {
+                "op": "gte",
+                "reducer": "allIsZero",
+                "value": 0
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 19,
+      "options": {
+        "legend": {
+          "calcs": [
+            "delta"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "sortBy": "Delta",
+          "sortDesc": true,
+          "width": 450
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(round(increase(keycloak_event_user_total{realm=~\"$realm\",client=~\"$client\",type=~\"$eventtype\"}[1m]))) by (realm,client,type)",
+          "interval": "1m",
+          "legendFormat": "{{realm}} / {{client}} / {{type}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "UserEvents",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${Datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byValue",
+              "options": {
+                "op": "gte",
+                "reducer": "allIsZero",
+                "value": 0
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": true,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 11
+      },
+      "id": 20,
+      "options": {
+        "legend": {
+          "calcs": [
+            "delta"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true,
+          "width": 500
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum(round(increase(keycloak_event_admin_total{realm=~\"$realm\",operation=~\"$operation\",resource=~\"$resource\"}[1m]))) by (realm,operation,resource)",
+          "interval": "1m",
+          "legendFormat": "{{realm}} / {{operation}} / {{resource}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "AdminEvents",
+      "type": "timeseries"
+    }
+  ],
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 42,
+  "tags": [
+    "keycloak",
+    "metrics"
+  ],
+  "templating": {
+    "list": [
+      {
+        "hide": 2,
+        "includeAll": false,
+        "name": "Datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      },
+      {
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${Datasource}"
+        },
+        "definition": "label_values(realm)",
+        "includeAll": true,
+        "label": "Realm",
+        "multi": true,
+        "name": "realm",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(realm)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "sort": 5,
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${Datasource}"
+        },
+        "definition": "label_values(keycloak_event_user_total{realm=~\"$realm\"},client)",
+        "includeAll": true,
+        "label": "Client",
+        "multi": true,
+        "name": "client",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(keycloak_event_user_total{realm=~\"$realm\"},client)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "sort": 5,
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": [
+            "$__all"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "includeAll": true,
+        "label": "UserEvent",
+        "multi": true,
+        "name": "eventtype",
+        "options": [
+          {
+            "selected": false,
+            "text": "LOGIN",
+            "value": "LOGIN"
+          },
+          {
+            "selected": false,
+            "text": "LOGIN_ERROR",
+            "value": "LOGIN_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "REGISTER",
+            "value": "REGISTER"
+          },
+          {
+            "selected": false,
+            "text": "REGISTER_ERROR",
+            "value": "REGISTER_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "LOGOUT",
+            "value": "LOGOUT"
+          },
+          {
+            "selected": false,
+            "text": "LOGOUT_ERROR",
+            "value": "LOGOUT_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "CODE_TO_TOKEN",
+            "value": "CODE_TO_TOKEN"
+          },
+          {
+            "selected": false,
+            "text": "CODE_TO_TOKEN_ERROR",
+            "value": "CODE_TO_TOKEN_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "CLIENT_LOGIN",
+            "value": "CLIENT_LOGIN"
+          },
+          {
+            "selected": false,
+            "text": "CLIENT_LOGIN_ERROR",
+            "value": "CLIENT_LOGIN_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "REFRESH_TOKEN",
+            "value": "REFRESH_TOKEN"
+          },
+          {
+            "selected": false,
+            "text": "REFRESH_TOKEN_ERROR",
+            "value": "REFRESH_TOKEN_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "VALIDATE_ACCESS_TOKEN",
+            "value": "VALIDATE_ACCESS_TOKEN"
+          },
+          {
+            "selected": false,
+            "text": "VALIDATE_ACCESS_TOKEN_ERROR",
+            "value": "VALIDATE_ACCESS_TOKEN_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "INTROSPECT_TOKEN",
+            "value": "INTROSPECT_TOKEN"
+          },
+          {
+            "selected": false,
+            "text": "INTROSPECT_TOKEN_ERROR",
+            "value": "INTROSPECT_TOKEN_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "FEDERATED_IDENTITY_LINK",
+            "value": "FEDERATED_IDENTITY_LINK"
+          },
+          {
+            "selected": false,
+            "text": "FEDERATED_IDENTITY_LINK_ERROR",
+            "value": "FEDERATED_IDENTITY_LINK_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "REMOVE_FEDERATED_IDENTITY",
+            "value": "REMOVE_FEDERATED_IDENTITY"
+          },
+          {
+            "selected": false,
+            "text": "REMOVE_FEDERATED_IDENTITY_ERROR",
+            "value": "REMOVE_FEDERATED_IDENTITY_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "UPDATE_EMAIL",
+            "value": "UPDATE_EMAIL"
+          },
+          {
+            "selected": false,
+            "text": "UPDATE_EMAIL_ERROR",
+            "value": "UPDATE_EMAIL_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "UPDATE_PROFILE",
+            "value": "UPDATE_PROFILE"
+          },
+          {
+            "selected": false,
+            "text": "UPDATE_PROFILE_ERROR",
+            "value": "UPDATE_PROFILE_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "UPDATE_PASSWORD",
+            "value": "UPDATE_PASSWORD"
+          },
+          {
+            "selected": false,
+            "text": "UPDATE_PASSWORD_ERROR",
+            "value": "UPDATE_PASSWORD_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "UPDATE_TOTP",
+            "value": "UPDATE_TOTP"
+          },
+          {
+            "selected": false,
+            "text": "UPDATE_TOTP_ERROR",
+            "value": "UPDATE_TOTP_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "VERIFY_EMAIL",
+            "value": "VERIFY_EMAIL"
+          },
+          {
+            "selected": false,
+            "text": "VERIFY_EMAIL_ERROR",
+            "value": "VERIFY_EMAIL_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "VERIFY_PROFILE",
+            "value": "VERIFY_PROFILE"
+          },
+          {
+            "selected": false,
+            "text": "VERIFY_PROFILE_ERROR",
+            "value": "VERIFY_PROFILE_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "REMOVE_TOTP",
+            "value": "REMOVE_TOTP"
+          },
+          {
+            "selected": false,
+            "text": "REMOVE_TOTP_ERROR",
+            "value": "REMOVE_TOTP_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "GRANT_CONSENT",
+            "value": "GRANT_CONSENT"
+          },
+          {
+            "selected": false,
+            "text": "GRANT_CONSENT_ERROR",
+            "value": "GRANT_CONSENT_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "UPDATE_CONSENT",
+            "value": "UPDATE_CONSENT"
+          },
+          {
+            "selected": false,
+            "text": "UPDATE_CONSENT_ERROR",
+            "value": "UPDATE_CONSENT_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "REVOKE_GRANT",
+            "value": "REVOKE_GRANT"
+          },
+          {
+            "selected": false,
+            "text": "REVOKE_GRANT_ERROR",
+            "value": "REVOKE_GRANT_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "SEND_VERIFY_EMAIL",
+            "value": "SEND_VERIFY_EMAIL"
+          },
+          {
+            "selected": false,
+            "text": "SEND_VERIFY_EMAIL_ERROR",
+            "value": "SEND_VERIFY_EMAIL_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "SEND_RESET_PASSWORD",
+            "value": "SEND_RESET_PASSWORD"
+          },
+          {
+            "selected": false,
+            "text": "SEND_RESET_PASSWORD_ERROR",
+            "value": "SEND_RESET_PASSWORD_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "SEND_IDENTITY_PROVIDER_LINK",
+            "value": "SEND_IDENTITY_PROVIDER_LINK"
+          },
+          {
+            "selected": false,
+            "text": "SEND_IDENTITY_PROVIDER_LINK_ERROR",
+            "value": "SEND_IDENTITY_PROVIDER_LINK_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "RESET_PASSWORD",
+            "value": "RESET_PASSWORD"
+          },
+          {
+            "selected": false,
+            "text": "RESET_PASSWORD_ERROR",
+            "value": "RESET_PASSWORD_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "RESTART_AUTHENTICATION",
+            "value": "RESTART_AUTHENTICATION"
+          },
+          {
+            "selected": false,
+            "text": "RESTART_AUTHENTICATION_ERROR",
+            "value": "RESTART_AUTHENTICATION_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "INVALID_SIGNATURE",
+            "value": "INVALID_SIGNATURE"
+          },
+          {
+            "selected": false,
+            "text": "INVALID_SIGNATURE_ERROR",
+            "value": "INVALID_SIGNATURE_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "REGISTER_NODE",
+            "value": "REGISTER_NODE"
+          },
+          {
+            "selected": false,
+            "text": "REGISTER_NODE_ERROR",
+            "value": "REGISTER_NODE_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "UNREGISTER_NODE",
+            "value": "UNREGISTER_NODE"
+          },
+          {
+            "selected": false,
+            "text": "UNREGISTER_NODE_ERROR",
+            "value": "UNREGISTER_NODE_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "USER_INFO_REQUEST",
+            "value": "USER_INFO_REQUEST"
+          },
+          {
+            "selected": false,
+            "text": "USER_INFO_REQUEST_ERROR",
+            "value": "USER_INFO_REQUEST_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "IDENTITY_PROVIDER_LINK_ACCOUNT",
+            "value": "IDENTITY_PROVIDER_LINK_ACCOUNT"
+          },
+          {
+            "selected": false,
+            "text": "IDENTITY_PROVIDER_LINK_ACCOUNT_ERROR",
+            "value": "IDENTITY_PROVIDER_LINK_ACCOUNT_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "IDENTITY_PROVIDER_LOGIN",
+            "value": "IDENTITY_PROVIDER_LOGIN"
+          },
+          {
+            "selected": false,
+            "text": "IDENTITY_PROVIDER_LOGIN_ERROR",
+            "value": "IDENTITY_PROVIDER_LOGIN_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "IDENTITY_PROVIDER_FIRST_LOGIN",
+            "value": "IDENTITY_PROVIDER_FIRST_LOGIN"
+          },
+          {
+            "selected": false,
+            "text": "IDENTITY_PROVIDER_FIRST_LOGIN_ERROR",
+            "value": "IDENTITY_PROVIDER_FIRST_LOGIN_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "IDENTITY_PROVIDER_POST_LOGIN",
+            "value": "IDENTITY_PROVIDER_POST_LOGIN"
+          },
+          {
+            "selected": false,
+            "text": "IDENTITY_PROVIDER_POST_LOGIN_ERROR",
+            "value": "IDENTITY_PROVIDER_POST_LOGIN_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "IDENTITY_PROVIDER_RESPONSE",
+            "value": "IDENTITY_PROVIDER_RESPONSE"
+          },
+          {
+            "selected": false,
+            "text": "IDENTITY_PROVIDER_RESPONSE_ERROR",
+            "value": "IDENTITY_PROVIDER_RESPONSE_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "IDENTITY_PROVIDER_RETRIEVE_TOKEN",
+            "value": "IDENTITY_PROVIDER_RETRIEVE_TOKEN"
+          },
+          {
+            "selected": false,
+            "text": "IDENTITY_PROVIDER_RETRIEVE_TOKEN_ERROR",
+            "value": "IDENTITY_PROVIDER_RETRIEVE_TOKEN_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "IMPERSONATE",
+            "value": "IMPERSONATE"
+          },
+          {
+            "selected": false,
+            "text": "IMPERSONATE_ERROR",
+            "value": "IMPERSONATE_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "CUSTOM_REQUIRED_ACTION",
+            "value": "CUSTOM_REQUIRED_ACTION"
+          },
+          {
+            "selected": false,
+            "text": "CUSTOM_REQUIRED_ACTION_ERROR",
+            "value": "CUSTOM_REQUIRED_ACTION_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "EXECUTE_ACTIONS",
+            "value": "EXECUTE_ACTIONS"
+          },
+          {
+            "selected": false,
+            "text": "EXECUTE_ACTIONS_ERROR",
+            "value": "EXECUTE_ACTIONS_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "EXECUTE_ACTION_TOKEN",
+            "value": "EXECUTE_ACTION_TOKEN"
+          },
+          {
+            "selected": false,
+            "text": "EXECUTE_ACTION_TOKEN_ERROR",
+            "value": "EXECUTE_ACTION_TOKEN_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "CLIENT_INFO",
+            "value": "CLIENT_INFO"
+          },
+          {
+            "selected": false,
+            "text": "CLIENT_INFO_ERROR",
+            "value": "CLIENT_INFO_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "CLIENT_REGISTER",
+            "value": "CLIENT_REGISTER"
+          },
+          {
+            "selected": false,
+            "text": "CLIENT_REGISTER_ERROR",
+            "value": "CLIENT_REGISTER_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "CLIENT_UPDATE",
+            "value": "CLIENT_UPDATE"
+          },
+          {
+            "selected": false,
+            "text": "CLIENT_UPDATE_ERROR",
+            "value": "CLIENT_UPDATE_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "CLIENT_DELETE",
+            "value": "CLIENT_DELETE"
+          },
+          {
+            "selected": false,
+            "text": "CLIENT_DELETE_ERROR",
+            "value": "CLIENT_DELETE_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "CLIENT_INITIATED_ACCOUNT_LINKING",
+            "value": "CLIENT_INITIATED_ACCOUNT_LINKING"
+          },
+          {
+            "selected": false,
+            "text": "CLIENT_INITIATED_ACCOUNT_LINKING_ERROR",
+            "value": "CLIENT_INITIATED_ACCOUNT_LINKING_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "TOKEN_EXCHANGE",
+            "value": "TOKEN_EXCHANGE"
+          },
+          {
+            "selected": false,
+            "text": "TOKEN_EXCHANGE_ERROR",
+            "value": "TOKEN_EXCHANGE_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "OAUTH2_DEVICE_AUTH",
+            "value": "OAUTH2_DEVICE_AUTH"
+          },
+          {
+            "selected": false,
+            "text": "OAUTH2_DEVICE_AUTH_ERROR",
+            "value": "OAUTH2_DEVICE_AUTH_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "OAUTH2_DEVICE_VERIFY_USER_CODE",
+            "value": "OAUTH2_DEVICE_VERIFY_USER_CODE"
+          },
+          {
+            "selected": false,
+            "text": "OAUTH2_DEVICE_VERIFY_USER_CODE_ERROR",
+            "value": "OAUTH2_DEVICE_VERIFY_USER_CODE_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "OAUTH2_DEVICE_CODE_TO_TOKEN",
+            "value": "OAUTH2_DEVICE_CODE_TO_TOKEN"
+          },
+          {
+            "selected": false,
+            "text": "OAUTH2_DEVICE_CODE_TO_TOKEN_ERROR",
+            "value": "OAUTH2_DEVICE_CODE_TO_TOKEN_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "AUTHREQID_TO_TOKEN",
+            "value": "AUTHREQID_TO_TOKEN"
+          },
+          {
+            "selected": false,
+            "text": "AUTHREQID_TO_TOKEN_ERROR",
+            "value": "AUTHREQID_TO_TOKEN_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "PERMISSION_TOKEN",
+            "value": "PERMISSION_TOKEN"
+          },
+          {
+            "selected": false,
+            "text": "PERMISSION_TOKEN_ERROR",
+            "value": "PERMISSION_TOKEN_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "DELETE_ACCOUNT",
+            "value": "DELETE_ACCOUNT"
+          },
+          {
+            "selected": false,
+            "text": "DELETE_ACCOUNT_ERROR",
+            "value": "DELETE_ACCOUNT_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "PUSHED_AUTHORIZATION_REQUEST",
+            "value": "PUSHED_AUTHORIZATION_REQUEST"
+          },
+          {
+            "selected": false,
+            "text": "PUSHED_AUTHORIZATION_REQUEST_ERROR",
+            "value": "PUSHED_AUTHORIZATION_REQUEST_ERROR"
+          },
+          {
+            "selected": false,
+            "text": "USER_DISABLED_BY_PERMANENT_LOCKOUT",
+            "value": "USER_DISABLED_BY_PERMANENT_LOCKOUT"
+          },
+          {
+            "selected": false,
+            "text": "USER_DISABLED_BY_PERMANENT_LOCKOUT_ERROR",
+            "value": "USER_DISABLED_BY_PERMANENT_LOCKOUT_ERROR"
+          }
+        ],
+        "query": "LOGIN,LOGIN_ERROR,REGISTER,REGISTER_ERROR,LOGOUT,LOGOUT_ERROR,CODE_TO_TOKEN,CODE_TO_TOKEN_ERROR,CLIENT_LOGIN,CLIENT_LOGIN_ERROR,REFRESH_TOKEN,REFRESH_TOKEN_ERROR,VALIDATE_ACCESS_TOKEN,VALIDATE_ACCESS_TOKEN_ERROR,INTROSPECT_TOKEN,INTROSPECT_TOKEN_ERROR,FEDERATED_IDENTITY_LINK,FEDERATED_IDENTITY_LINK_ERROR,REMOVE_FEDERATED_IDENTITY,REMOVE_FEDERATED_IDENTITY_ERROR,UPDATE_EMAIL,UPDATE_EMAIL_ERROR,UPDATE_PROFILE,UPDATE_PROFILE_ERROR,UPDATE_PASSWORD,UPDATE_PASSWORD_ERROR,UPDATE_TOTP,UPDATE_TOTP_ERROR,VERIFY_EMAIL,VERIFY_EMAIL_ERROR,VERIFY_PROFILE,VERIFY_PROFILE_ERROR,REMOVE_TOTP,REMOVE_TOTP_ERROR,GRANT_CONSENT,GRANT_CONSENT_ERROR,UPDATE_CONSENT,UPDATE_CONSENT_ERROR,REVOKE_GRANT,REVOKE_GRANT_ERROR,SEND_VERIFY_EMAIL,SEND_VERIFY_EMAIL_ERROR,SEND_RESET_PASSWORD,SEND_RESET_PASSWORD_ERROR,SEND_IDENTITY_PROVIDER_LINK,SEND_IDENTITY_PROVIDER_LINK_ERROR,RESET_PASSWORD,RESET_PASSWORD_ERROR,RESTART_AUTHENTICATION,RESTART_AUTHENTICATION_ERROR,INVALID_SIGNATURE,INVALID_SIGNATURE_ERROR,REGISTER_NODE,REGISTER_NODE_ERROR,UNREGISTER_NODE,UNREGISTER_NODE_ERROR,USER_INFO_REQUEST,USER_INFO_REQUEST_ERROR,IDENTITY_PROVIDER_LINK_ACCOUNT,IDENTITY_PROVIDER_LINK_ACCOUNT_ERROR,IDENTITY_PROVIDER_LOGIN,IDENTITY_PROVIDER_LOGIN_ERROR,IDENTITY_PROVIDER_FIRST_LOGIN,IDENTITY_PROVIDER_FIRST_LOGIN_ERROR,IDENTITY_PROVIDER_POST_LOGIN,IDENTITY_PROVIDER_POST_LOGIN_ERROR,IDENTITY_PROVIDER_RESPONSE,IDENTITY_PROVIDER_RESPONSE_ERROR,IDENTITY_PROVIDER_RETRIEVE_TOKEN,IDENTITY_PROVIDER_RETRIEVE_TOKEN_ERROR,IMPERSONATE,IMPERSONATE_ERROR,CUSTOM_REQUIRED_ACTION,CUSTOM_REQUIRED_ACTION_ERROR,EXECUTE_ACTIONS,EXECUTE_ACTIONS_ERROR,EXECUTE_ACTION_TOKEN,EXECUTE_ACTION_TOKEN_ERROR,CLIENT_INFO,CLIENT_INFO_ERROR,CLIENT_REGISTER,CLIENT_REGISTER_ERROR,CLIENT_UPDATE,CLIENT_UPDATE_ERROR,CLIENT_DELETE,CLIENT_DELETE_ERROR,CLIENT_INITIATED_ACCOUNT_LINKING,CLIENT_INITIATED_ACCOUNT_LINKING_ERROR,TOKEN_EXCHANGE,TOKEN_EXCHANGE_ERROR,OAUTH2_DEVICE_AUTH,OAUTH2_DEVICE_AUTH_ERROR,OAUTH2_DEVICE_VERIFY_USER_CODE,OAUTH2_DEVICE_VERIFY_USER_CODE_ERROR,OAUTH2_DEVICE_CODE_TO_TOKEN,OAUTH2_DEVICE_CODE_TO_TOKEN_ERROR,AUTHREQID_TO_TOKEN,AUTHREQID_TO_TOKEN_ERROR,PERMISSION_TOKEN,PERMISSION_TOKEN_ERROR,DELETE_ACCOUNT,DELETE_ACCOUNT_ERROR,PUSHED_AUTHORIZATION_REQUEST,PUSHED_AUTHORIZATION_REQUEST_ERROR,USER_DISABLED_BY_PERMANENT_LOCKOUT,USER_DISABLED_BY_PERMANENT_LOCKOUT_ERROR\n",
+        "type": "custom"
+      },
+      {
+        "current": {
+          "text": [
+            "$__all"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "includeAll": true,
+        "label": "Admin: operation",
+        "multi": true,
+        "name": "operation",
+        "options": [
+          {
+            "selected": false,
+            "text": "ACTION",
+            "value": "ACTION"
+          },
+          {
+            "selected": false,
+            "text": "CREATE",
+            "value": "CREATE"
+          },
+          {
+            "selected": false,
+            "text": "UPDATE",
+            "value": "UPDATE"
+          },
+          {
+            "selected": false,
+            "text": "DELETE",
+            "value": "DELETE"
+          }
+        ],
+        "query": "ACTION,CREATE,UPDATE,DELETE",
+        "type": "custom"
+      },
+      {
+        "current": {
+          "text": [
+            "$__all"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "includeAll": true,
+        "label": "Admin: resource",
+        "multi": true,
+        "name": "resource",
+        "options": [
+          {
+            "selected": false,
+            "text": "REALM",
+            "value": "REALM"
+          },
+          {
+            "selected": false,
+            "text": "REALM_ROLE",
+            "value": "REALM_ROLE"
+          },
+          {
+            "selected": false,
+            "text": "REALM_ROLE_MAPPING",
+            "value": "REALM_ROLE_MAPPING"
+          },
+          {
+            "selected": false,
+            "text": "REALM_SCOPE_MAPPING",
+            "value": "REALM_SCOPE_MAPPING"
+          },
+          {
+            "selected": false,
+            "text": "AUTH_FLOW",
+            "value": "AUTH_FLOW"
+          },
+          {
+            "selected": false,
+            "text": "AUTH_EXECUTION_FLOW",
+            "value": "AUTH_EXECUTION_FLOW"
+          },
+          {
+            "selected": false,
+            "text": "AUTH_EXECUTION",
+            "value": "AUTH_EXECUTION"
+          },
+          {
+            "selected": false,
+            "text": "AUTHENTICATOR_CONFIG",
+            "value": "AUTHENTICATOR_CONFIG"
+          },
+          {
+            "selected": false,
+            "text": "REQUIRED_ACTION",
+            "value": "REQUIRED_ACTION"
+          },
+          {
+            "selected": false,
+            "text": "IDENTITY_PROVIDER",
+            "value": "IDENTITY_PROVIDER"
+          },
+          {
+            "selected": false,
+            "text": "IDENTITY_PROVIDER_MAPPER",
+            "value": "IDENTITY_PROVIDER_MAPPER"
+          },
+          {
+            "selected": false,
+            "text": "PROTOCOL_MAPPER",
+            "value": "PROTOCOL_MAPPER"
+          },
+          {
+            "selected": false,
+            "text": "USER",
+            "value": "USER"
+          },
+          {
+            "selected": false,
+            "text": "USER_LOGIN_FAILURE",
+            "value": "USER_LOGIN_FAILURE"
+          },
+          {
+            "selected": false,
+            "text": "USER_SESSION",
+            "value": "USER_SESSION"
+          },
+          {
+            "selected": false,
+            "text": "USER_FEDERATION_PROVIDER",
+            "value": "USER_FEDERATION_PROVIDER"
+          },
+          {
+            "selected": false,
+            "text": "USER_FEDERATION_MAPPER",
+            "value": "USER_FEDERATION_MAPPER"
+          },
+          {
+            "selected": false,
+            "text": "GROUP",
+            "value": "GROUP"
+          },
+          {
+            "selected": false,
+            "text": "GROUP_MEMBERSHIP",
+            "value": "GROUP_MEMBERSHIP"
+          },
+          {
+            "selected": false,
+            "text": "CLIENT",
+            "value": "CLIENT"
+          },
+          {
+            "selected": false,
+            "text": "CLIENT_INITIAL_ACCESS_MODEL",
+            "value": "CLIENT_INITIAL_ACCESS_MODEL"
+          },
+          {
+            "selected": false,
+            "text": "CLIENT_ROLE",
+            "value": "CLIENT_ROLE"
+          },
+          {
+            "selected": false,
+            "text": "CLIENT_ROLE_MAPPING",
+            "value": "CLIENT_ROLE_MAPPING"
+          },
+          {
+            "selected": false,
+            "text": "CLIENT_SCOPE",
+            "value": "CLIENT_SCOPE"
+          },
+          {
+            "selected": false,
+            "text": "CLIENT_SCOPE_MAPPING",
+            "value": "CLIENT_SCOPE_MAPPING"
+          },
+          {
+            "selected": false,
+            "text": "CLIENT_SCOPE_CLIENT_MAPPING",
+            "value": "CLIENT_SCOPE_CLIENT_MAPPING"
+          },
+          {
+            "selected": false,
+            "text": "CLUSTER_NODE",
+            "value": "CLUSTER_NODE"
+          },
+          {
+            "selected": false,
+            "text": "COMPONENT",
+            "value": "COMPONENT"
+          },
+          {
+            "selected": false,
+            "text": "AUTHORIZATION_RESOURCE_SERVER",
+            "value": "AUTHORIZATION_RESOURCE_SERVER"
+          },
+          {
+            "selected": false,
+            "text": "AUTHORIZATION_RESOURCE",
+            "value": "AUTHORIZATION_RESOURCE"
+          },
+          {
+            "selected": false,
+            "text": "AUTHORIZATION_SCOPE",
+            "value": "AUTHORIZATION_SCOPE"
+          },
+          {
+            "selected": false,
+            "text": "AUTHORIZATION_POLICY",
+            "value": "AUTHORIZATION_POLICY"
+          },
+          {
+            "selected": false,
+            "text": "CUSTOM",
+            "value": "CUSTOM"
+          }
+        ],
+        "query": "REALM,REALM_ROLE,REALM_ROLE_MAPPING,REALM_SCOPE_MAPPING,AUTH_FLOW,AUTH_EXECUTION_FLOW,AUTH_EXECUTION,AUTHENTICATOR_CONFIG,REQUIRED_ACTION,IDENTITY_PROVIDER,IDENTITY_PROVIDER_MAPPER,PROTOCOL_MAPPER,USER,USER_LOGIN_FAILURE,USER_SESSION,USER_FEDERATION_PROVIDER,USER_FEDERATION_MAPPER,GROUP,GROUP_MEMBERSHIP,CLIENT,CLIENT_INITIAL_ACCESS_MODEL,CLIENT_ROLE,CLIENT_ROLE_MAPPING,CLIENT_SCOPE,CLIENT_SCOPE_MAPPING,CLIENT_SCOPE_CLIENT_MAPPING,CLUSTER_NODE,COMPONENT,AUTHORIZATION_RESOURCE_SERVER,AUTHORIZATION_RESOURCE,AUTHORIZATION_SCOPE,AUTHORIZATION_POLICY,CUSTOM",
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "title": "Keycloak Metrics",
+  "version": 1
+}

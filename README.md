@@ -81,7 +81,7 @@ keycloak_event_user_total{client="other-client",error="invalid_user_credentials"
 Set to `true` (default is `false`) to provide metrics for user/client count per realm and session count per client. Metrics:
 
 ```txt
-# HELP keycloak_users  
+# HELP keycloak_users
 # TYPE keycloak_users gauge
 keycloak_users{realm="master",} 1.0
 keycloak_users{realm="my-realm",} 2.0
@@ -119,7 +119,7 @@ If scrapping takes less than `KC_METRICS_STATS_INFO_THRESHOLD` duration will be 
 
 ### Grafana Dashboard
 
-Can be found here: [keycloak-metrics.json](https://git.kokuwa.io/keycloak/keycloak/blob/main/src/test/k3s/dev/grafana/files/dashboards/keycloak-metrics.json)
+Can be found here: [keycloak-metrics.json](https://git.kokuwa.io/kokuwaio/keycloak-event-metrics/src/branch/main/keycloak-metrics.json)
 
 ### Testcontainers
 
