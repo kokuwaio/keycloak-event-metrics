@@ -30,7 +30,7 @@ steps:
       SONATYPE_ORG_PASSWORD: {from_secret: sonatype_org_password}
 
   image:
-    image: kokuwaio/buildctl:v0.26.1
+    image: kokuwaio/buildctl:v0.26.2
     settings:
       env-file: maven.env
       name:
