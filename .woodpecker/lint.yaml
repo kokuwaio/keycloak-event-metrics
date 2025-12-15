@@ -16,7 +16,7 @@ steps:
     when: [path: [.woodpecker/lint.yaml, "**/*.yaml"]]
 
   markdown:
-    image: kokuwaio/markdownlint:0.46.0
+    image: kokuwaio/markdownlint:0.47.0
     depends_on: []
     when: [path: [.woodpecker/lint.yaml, "**/*.md", .markdownlint.yaml]]
 
