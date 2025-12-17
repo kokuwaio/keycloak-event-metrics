@@ -15,7 +15,7 @@ services:
 steps:
 
   maven:
-    image: maven:3.9.11-eclipse-temurin-17
+    image: maven:3.9.12-eclipse-temurin-17
     commands: mvn deploy -Pdeploy --settings=.woodpecker/maven/settings.xml
     environment:
       MAVEN_GPG_KEY: {from_secret: woodpecker_gpg_key}
