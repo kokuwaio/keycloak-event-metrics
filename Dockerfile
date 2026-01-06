@@ -11,5 +11,5 @@ RUN mkdir "$HOME/.m2" && printf "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
 COPY . .
 RUN --mount=type=cache,target=/tmp/mvn-repo mvn package -DskipTests -P=-dev
 
-FROM busybox:1.37.0-uclibc@sha256:b31099d96722a5d85f31a5e6832044e87467f59a850eeef8e96ef485308de804
+FROM busybox:1.37.0-uclibc@sha256:f2bd3673dcc848b4ef61163a0e53095504c9e643313456906fdd47f1a46e9755
 COPY --from=build --chmod=444 /build/target/keycloak-event-metrics.jar /opt/keycloak/providers/keycloak-event-metrics.jar
