@@ -7,7 +7,7 @@ RUN mkdir "$HOME/.m2" && printf "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
 <settings>\n\
 	<localRepository>/tmp/mvn-repo</localRepository>\n\
 	<mirrors><mirror><url>%s</url><mirrorOf>central</mirrorOf></mirror></mirrors>\n\
-</settings>" "${MAVEN_MIRROR_CENTRAL:-https://repo.maven.apache.org/maven2}" > "$HOME/.m2/settings.xml"
+</settings>" "${MAVEN_MIRROR_CENTRAL:-https://mirror.kokuwa.io/maven2}" > "$HOME/.m2/settings.xml"
 COPY . .
 RUN --mount=type=cache,target=/tmp/mvn-repo mvn package -DskipTests -P=-dev
 

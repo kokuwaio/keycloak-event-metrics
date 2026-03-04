@@ -26,7 +26,7 @@
 	</servers>
 	<mirrors>
 		<mirror>
-			<url>http://mirror.woodpecker.svc.cluster.local/maven2</url>
+			<url>https://mirror.kokuwa.io/maven2</url>
 			<mirrorOf>central</mirrorOf>
 		</mirror>
 	</mirrors>
