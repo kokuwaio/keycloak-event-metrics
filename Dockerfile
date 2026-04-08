@@ -2,12 +2,12 @@ FROM maven:3.9.14-eclipse-temurin-17@sha256:69cbc8e5054547a094d8190abc62ea0b1f4f
 SHELL ["/usr/bin/bash", "-e", "-u", "-c"]
 WORKDIR /build
 ARG MAVEN_ARGS="--batch-mode --color=always --no-transfer-progress"
-ARG MAVEN_MIRROR_CENTRAL
+ARG MAVEN_MIRROR_URL
 RUN mkdir "$HOME/.m2" && printf "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
 <settings>\n\
 	<localRepository>/tmp/mvn-repo</localRepository>\n\
 	<mirrors><mirror><url>%s</url><mirrorOf>central</mirrorOf></mirror></mirrors>\n\
-</settings>" "${MAVEN_MIRROR_CENTRAL:-https://mirror.kokuwa.io/maven2}" > "$HOME/.m2/settings.xml"
+</settings>" "${MAVEN_MIRROR_URL:-https://mirror.kokuwa.io/maven2}" > "$HOME/.m2/settings.xml"
 COPY . .
 RUN --mount=type=cache,target=/tmp/mvn-repo mvn package -DskipTests -P=-dev
 

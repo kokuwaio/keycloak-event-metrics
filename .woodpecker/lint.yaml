@@ -10,6 +10,11 @@ steps:
     depends_on: []
     when: [path: [.woodpecker/lint.yaml, renovate.json]]
 
+  just:
+    image: kokuwaio/just:1.48.1
+    depends_on: []
+    when: [path: [.woodpecker/lint.yaml, .justfile]]
+
   yaml:
     image: kokuwaio/yamllint:v1.38.0
     depends_on: []

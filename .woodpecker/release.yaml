@@ -38,7 +38,7 @@ steps:
         - docker.io/kokuwaio/keycloak-event-metrics:$VERSION
         - ghcr.io/kokuwaio/keycloak-event-metrics:latest
         - ghcr.io/kokuwaio/keycloak-event-metrics:$VERSION
-      build-args: {MAVEN_MIRROR_CENTRAL: "${MAVEN_MIRROR_CENTRAL}"}
+      build-args: {MAVEN_MIRROR_URL: "${MAVEN_MIRROR_URL}"}
       platform: [linux/amd64, linux/arm64]
       auth:
         "https://index.docker.io/v1/":
