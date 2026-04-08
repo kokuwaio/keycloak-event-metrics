@@ -10,7 +10,7 @@ import java.time.Instant;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import jakarta.ws.rs.NotAuthorizedException;
+import jakarta.ws.rs.ClientErrorException;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,9 +64,11 @@ public class KeycloakIT {
 		assertDoesNotThrow(() -> keycloak.login(clientId1, realmName1, username1, password1));
 		assertDoesNotThrow(() -> keycloak.login(clientId1, realmName1, username1, password1));
 		assertDoesNotThrow(() -> keycloak.login(clientId2, realmName2, username2, password2));
-		assertThrows(NotAuthorizedException.class, () -> keycloak.login(clientId3, realmName2, "nope", "nö"));
-		assertThrows(NotAuthorizedException.class, () -> keycloak.login(clientId4, realmName2, "foo", "bar"));
-		assertThrows(NotAuthorizedException.class, () -> keycloak.login(clientId2, realmName2, username2, "nope"));
+		// <= 26.5 401 with NotAuthorizedException
+		// >= 26.6 400 with BadRequestException
+		assertThrows(ClientErrorException.class, () -> keycloak.login(clientId3, realmName2, "nope", "nö"));
+		assertThrows(ClientErrorException.class, () -> keycloak.login(clientId4, realmName2, "foo", "bar"));
+		assertThrows(ClientErrorException.class, () -> keycloak.login(clientId2, realmName2, username2, "nope"));
 
 		prometheus.scrap();
 		var loginAfter = prometheus.userEvent(EventType.LOGIN);

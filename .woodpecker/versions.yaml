@@ -10,7 +10,7 @@ matrix:
     - 23.0.7
     - 24.0.5
     - 25.0.6
-    - 26.3.1
+    - 26.6.0
 
 services:
   - name: dockerd

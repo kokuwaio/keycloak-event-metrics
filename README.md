@@ -164,7 +164,7 @@ RUN mv ${METRICS_FILE} /opt/keycloak/providers
 ### build keycloak with metrics
 ###
 
-FROM quay.io/keycloak/keycloak:25.2.5
+FROM quay.io/keycloak/keycloak:26.6.0
 
 ENV KEYCLOAK_ADMIN=admin
 ENV KEYCLOAK_ADMIN_PASSWORD=password
