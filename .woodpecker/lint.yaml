@@ -11,7 +11,7 @@ steps:
     when: [path: [.woodpecker/lint.yaml, renovate.json]]
 
   just:
-    image: kokuwaio/just:1.48.1
+    image: kokuwaio/just:1.49.0
     depends_on: []
     when: [path: [.woodpecker/lint.yaml, .justfile]]
 
