@@ -11,11 +11,11 @@ matrix:
     - 24.0.5
     - 25.0.6
     - 26.6.0
+    - 26.7.0
 
 services:
   - name: dockerd
     image: kokuwaio/dockerd:28.4.0-rootless
-    privileged: true
     ports: [2375, 8080]
 
 steps:
