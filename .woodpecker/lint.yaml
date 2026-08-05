@@ -26,6 +26,6 @@ steps:
     when: [path: [.woodpecker/lint.yaml, "**/*.md", .markdownlint.yaml]]
 
   dockerfile:
-    image: kokuwaio/hadolint:v2.14.0
+    image: kokuwaio/hadolint:v2.15.1
     depends_on: []
     when: [path: [.woodpecker/lint.yaml, Dockerfile]]
