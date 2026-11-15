@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+<settings xmlns="http://maven.apache.org/SETTINGS/1.3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.3.0 https://maven.apache.org/xsd/settings-1.3.0.xsd">
 	<interactiveMode>false</interactiveMode>
 	<localRepository>/woodpecker/.m2</localRepository>
 	<servers>
@@ -7,11 +7,17 @@
 			<id>git.kokuwa.io</id>
 			<username>${env.FORGEJO_USERNAME}</username>
 			<password>${env.FORGEJO_PASSWORD}</password>
+			<repositoryOrigins>
+				<repositoryOrigin>https://git.kokuwa.io</repositoryOrigin>
+			</repositoryOrigins>
 		</server>
 		<server>
 			<id>sonatype.org</id>
 			<username>${env.SONATYPE_ORG_USERNAME}</username>
 			<password>${env.SONATYPE_ORG_PASSWORD}</password>
+			<repositoryOrigins>
+				<repositoryOrigin>https://central.sonatype.com</repositoryOrigin>
+			</repositoryOrigins>
 		</server>
 		<server>
 			<id>docker.io</id>
